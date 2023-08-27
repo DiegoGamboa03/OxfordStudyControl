@@ -111,7 +111,8 @@ router.post('/evaluateExam', async (req, res) => {
             answers: req.body.answers
         };
 
-        let num_questions = examUtils.getNumQuestions(req.body.exam_id);
+        let num_questions = await examUtils.getNumQuestions(req.body.exam_id);
+
 
         if(num_questions == generatedTestJson.answers.length){
             for (const element of generatedTestJson.answers) {
@@ -138,8 +139,8 @@ router.post('/evaluateExam', async (req, res) => {
                         }
                     });
                 });
-            res.send('Se han actualizado todas las respuestas');
             }
+            res.send('Se han actualizado todas las respuestas');
         }else{
             res.statusCode = 500;
             res.send('envie todas las preguntas');
