@@ -7,11 +7,14 @@ app.set('port',process.env.PORT || 3000);
 
 //middlewares
 app.use(morgan('dev'));
-app.use(express.urlencoded)
+app.use(express.urlencoded({
+    extended: true
+  }));
 app.use(express.json());
 
 //routes
 app.use('/users', require('./Routes/Users'));
+app.use('/exams', require('./Routes/Exams'));
 
 //starting the server
 app.listen(app.get('port'),() => {
