@@ -47,10 +47,74 @@ function getQuestions(exam_id,num_questions) {
     });
 }
 
+//Ver si elimimo esto
+function getQuestionsGeneratedTest(exam_id, student_id, date) {
+    return new Promise((resolve, reject) => {
+        const sql = `SELECT * FROM GeneratedTestQuestions
+            WHERE exam_id = '${exam_id}'
+            AND student_id = '${student_id}'
+            AND generated_test_date = '${date}'`;
+
+        conn.query(sql, (error, results) => {
+            if (error) {
+                reject(error);
+            } else {
+                if (results.length > 0) {
+                    let questions = JSON.parse(JSON.stringify(results));
+                    resolve(questions);
+                } else {
+                    resolve([]);
+                }
+            }
+        });
+    });
+}
+
+function checkAnswer(exam_id, answer) {
+    return new Promise((resolve, reject) => {
+        const sql = `SELECT checkAnswer('${exam_id}', '${answer}') AS is_correct`;
+        conn.query(sql, (error, results) => {
+            if (error) {
+                reject(error);
+            } else {
+                if (results.length > 0) {
+                    let is_correct = JSON.parse(JSON.stringify(results))[0].is_correct;
+                    resolve(is_correct);
+                } else {
+                    resolve(-1);
+                }
+            }
+        });
+    });
+}
+
+function checkMaxScore(question_id) {
+    return new Promise((resolve, reject) => {
+        const sql = `SELECT max_score FROM Questions WHERE question = '${question_id}'`;
+        
+        conn.query(sql, (error, results) => {
+            if (error) {
+                reject(error);
+            } else {
+                if (results.length > 0) {
+                    let  max_score = JSON.parse(JSON.stringify(results))[0].max_score;
+                    console.log(parseFloat(max_score).toFixed(1));
+                    resolve(parseFloat(max_score).toFixed(1));
+                } else {
+                    resolve(null);
+                }
+            }
+        });
+    });
+}
+
 
   
 module.exports = {
     getNumQuestions,
-    getQuestions
+    getQuestions,
+    getQuestionsGeneratedTest,
+    checkAnswer,
+    checkMaxScore
     // Otras funciones separadas por comas...
 };

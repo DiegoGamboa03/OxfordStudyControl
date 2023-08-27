@@ -102,5 +102,54 @@ router.get('/generate', async (req, res) => {
     }
 });
 
+router.post('/evaluateExam', async (req, res) => {
+    try {
+        const generatedTestJson = {
+            exam_id: req.body.exam_id,
+            student_id: req.body.student_id,
+            generated_test_date: req.body.generated_test_date,
+            answers: req.body.answers
+        };
+
+        let num_questions = examUtils.getNumQuestions(req.body.exam_id);
+
+        if(num_questions == generatedTestJson.answers.length){
+            for (const element of generatedTestJson.answers) {
+                let is_correct = await examUtils.checkAnswer(element.question_id, element.answer);
+                let max_score = await examUtils.checkMaxScore(element.question_id);
+                console.log(is_correct);
+    
+                const sql = 'UPDATE GeneratedTestQuestions SET '  +
+                `answer_text='${element.answer}', ` +
+                `score= ${is_correct == -1 ? null : is_correct ? max_score : 0} ` +
+                `WHERE exam_id='${req.body.exam_id}' ` +
+                `AND student_id='${req.body.student_id}' `+
+                `AND question_id='${element.question_id}' `+
+                `AND generated_test_date='${req.body.generated_test_date}' `;
+    
+                console.log(sql);
+    
+                await new Promise((resolve, reject) => {
+                    conn.query(sql, error => {
+                        if (error) {
+                            reject(error);
+                        } else {
+                            resolve();
+                        }
+                    });
+                });
+            res.send('Se han actualizado todas las respuestas');
+            }
+        }else{
+            res.statusCode = 500;
+            res.send('envie todas las preguntas');
+        }
+    } catch (error) {
+        res.statusCode = 500;
+        res.send(error.message);
+    }
+});
+
+
 
 module.exports = router;

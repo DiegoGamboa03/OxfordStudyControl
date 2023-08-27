@@ -19,7 +19,7 @@ router.get('/', (req, res) => {
           res.send('No se encontraron usuarios');
           return;
         }
-        });
+    });
 });
 
 router.get('/:id', (req, res) => {
