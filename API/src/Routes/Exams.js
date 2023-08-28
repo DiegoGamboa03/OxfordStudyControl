@@ -115,12 +115,15 @@ router.post('/evaluateExam', async (req, res) => {
 
 
         if(num_questions == generatedTestJson.answers.length){
+            let final_score = 0.0;
             for (const element of generatedTestJson.answers) {
+                
                 let is_correct = await examUtils.checkAnswer(element.question_id, element.answer);
                 let max_score = await examUtils.checkMaxScore(element.question_id);
-                console.log(is_correct);
-    
-                const sql = 'UPDATE GeneratedTestQuestions SET '  +
+                
+                final_score += (is_correct == -1 ? 0 : is_correct ? max_score : 0)
+
+                let sql = 'UPDATE GeneratedTestQuestions SET '  +
                 `answer_text='${element.answer}', ` +
                 `score= ${is_correct == -1 ? null : is_correct ? max_score : 0} ` +
                 `WHERE exam_id='${req.body.exam_id}' ` +
@@ -128,11 +131,10 @@ router.post('/evaluateExam', async (req, res) => {
                 `AND question_id='${element.question_id}' `+
                 `AND generated_test_date='${req.body.generated_test_date}' `;
     
-                console.log(sql);
-    
                 await new Promise((resolve, reject) => {
                     conn.query(sql, error => {
                         if (error) {
+                            console.log(error.sqlMessage)
                             reject(error);
                         } else {
                             resolve();
@@ -140,7 +142,16 @@ router.post('/evaluateExam', async (req, res) => {
                     });
                 });
             }
-            res.send('Se han actualizado todas las respuestas');
+
+            examUtils.insertGrades(req.body.exam_id,req.body.student_id, req.body.generated_test_date, final_score)
+            .then(result => {
+                res.send('Se ha añadido la calificacion');
+            })
+            .catch(error => {
+                console.log(error.sqlMessage);
+                res.statusCode = 202;
+                res.send(error.sqlMessage);
+            });
         }else{
             res.statusCode = 500;
             res.send('envie todas las preguntas');

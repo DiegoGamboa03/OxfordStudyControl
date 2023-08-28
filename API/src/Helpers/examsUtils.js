@@ -98,11 +98,28 @@ function checkMaxScore(question_id) {
             } else {
                 if (results.length > 0) {
                     let  max_score = JSON.parse(JSON.stringify(results))[0].max_score;
-                    console.log(parseFloat(max_score).toFixed(1));
                     resolve(parseFloat(max_score).toFixed(1));
                 } else {
                     resolve(null);
                 }
+            }
+        });
+    });
+}
+
+function insertGrades(exam_id, student_id, date, score) {
+    return new Promise((resolve, reject) => {
+        const sql = `INSERT INTO Grades (exam_id, student_id, test_date, score)
+        VALUES (?, ?, ?, ?)`;
+
+        let values = [exam_id, student_id, date, score];
+
+        conn.query(sql, values, (error, result) => {
+            if (error) {
+                console.log(error.sql);
+                reject(error);
+            } else {
+                resolve(result);
             }
         });
     });
@@ -115,6 +132,7 @@ module.exports = {
     getQuestions,
     getQuestionsGeneratedTest,
     checkAnswer,
-    checkMaxScore
+    checkMaxScore,
+    insertGrades
     // Otras funciones separadas por comas...
 };
