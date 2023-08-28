@@ -5,7 +5,8 @@ const conn = mysql.createConnection({
     user: 'bd2_202215_27158735',
     password: '27158735',
     port:3306,
-    database:'bd2_202215_27158735'
+    database:'bd2_202215_27158735',
+    dateStrings: true
   });
   
 conn.connect(function(err) {

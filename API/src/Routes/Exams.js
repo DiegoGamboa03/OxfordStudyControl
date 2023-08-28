@@ -23,7 +23,7 @@ router.get('/', (req, res) => {
         });
 });
 
-router.get('/getExam/:id', (req, res) => {
+router.get('/getExam/:name', (req, res) => {
     const { name } = req.params;
     const sql = `SELECT * FROM Exams WHERE name = '${name}'`;
 
@@ -43,6 +43,66 @@ router.get('/getExam/:id', (req, res) => {
         }
         });
 });
+
+router.get('/generatedTests/:student_id/:exam_id', async (req, res) => {
+    const { student_id, exam_id } = req.params;
+    const sql = `SELECT * FROM GeneratedTests WHERE exam_id = '${exam_id}' AND student_id = '${student_id}'`;
+    console.log(sql);
+    
+    try {
+        const results = await new Promise((resolve, reject) => {
+            conn.query(sql, (error, results) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(results);
+                }
+            });
+        });
+
+        if (results.length > 0) {
+            console.log(results);
+            let json = JSON.parse(JSON.stringify(results));
+            
+            for (let i = 0; i < json.length; i++) {
+                const element = json[i];
+                const questions = await examUtils.getGeneratedTestsQuestions(element.exam_id, element.student_id, element.test_date);
+                element.questions = questions;
+                console.log(element);
+            }
+
+            res.send(json);
+        } else {
+            res.status(202).send('No se encontraron notas');
+        }
+    } catch (error) {
+        console.error('Error:', error.message);
+        res.status(500).send('Hubo un error al obtener los resultados.');
+    }
+});
+
+
+router.get('/grades/:student_id', (req, res) => {
+    const { student_id } = req.params;
+    const sql = `SELECT * FROM Grades WHERE student_id = '${student_id}'`;
+
+    conn.query(sql, (error, results) => {
+        
+        if (results.length > 0) {
+            res.json(results);
+        }
+        else if (error){
+            res.send(error.message);
+            return;
+        }
+        else{
+          res.statusCode = 202;
+          res.send('No se encontraron notas');
+          return;
+        }
+        });
+});
+
 
 router.get('/generate', async (req, res) => {
     try {
@@ -64,6 +124,8 @@ router.get('/generate', async (req, res) => {
             const sql = 'INSERT INTO GeneratedTests SET ?';
             conn.query(sql, generatedTestJson, error => {
                 if (error) {
+                    console.log(error.sql);
+                    console.log(error.sqlMessage);
                     reject(error);
                 } else {
                     resolve();
@@ -72,7 +134,7 @@ router.get('/generate', async (req, res) => {
         });
 
         const insertions = questions.map((question, index) => {
-            return new Promise((resolve, reject) => {
+            return new Promise(async (resolve, reject) => {
                 const sql = 'INSERT INTO GeneratedTestQuestions SET ?';
                 const generatedTestQuestionsJson = {
                     student_id: req.body.student_id,
@@ -81,7 +143,12 @@ router.get('/generate', async (req, res) => {
                     question_id: question,
                     question_position: index + 1
                 };
-                
+
+                examUtils.getQuestionOptions(question).then(options =>{
+                    console.log(options + ' ' + question)
+                    generatedTestQuestionsJson.options = options;
+                });
+
                 conn.query(sql, generatedTestQuestionsJson, error => {
                     if (error) {
                         reject(error);
@@ -122,7 +189,7 @@ router.post('/evaluateExam', async (req, res) => {
                 let max_score = await examUtils.checkMaxScore(element.question_id);
                 
                 final_score += (is_correct == -1 ? 0 : is_correct ? max_score : 0)
-
+                //Poner un if que se asegure que si is_correct es igual a -1, haga la logica de la tabla de examenes por corregir
                 let sql = 'UPDATE GeneratedTestQuestions SET '  +
                 `answer_text='${element.answer}', ` +
                 `score= ${is_correct == -1 ? null : is_correct ? max_score : 0} ` +
