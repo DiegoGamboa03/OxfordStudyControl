@@ -47,8 +47,7 @@ router.get('/getExam/:name', (req, res) => {
 router.get('/generatedTests/:student_id/:exam_id', async (req, res) => {
     const { student_id, exam_id } = req.params;
     const sql = `SELECT * FROM GeneratedTests WHERE exam_id = '${exam_id}' AND student_id = '${student_id}'`;
-    console.log(sql);
-    
+
     try {
         const results = await new Promise((resolve, reject) => {
             conn.query(sql, (error, results) => {
@@ -61,14 +60,14 @@ router.get('/generatedTests/:student_id/:exam_id', async (req, res) => {
         });
 
         if (results.length > 0) {
-            console.log(results);
+
             let json = JSON.parse(JSON.stringify(results));
             
             for (let i = 0; i < json.length; i++) {
                 const element = json[i];
                 const questions = await examUtils.getGeneratedTestsQuestions(element.exam_id, element.student_id, element.test_date);
                 element.questions = questions;
-                console.log(element);
+
             }
 
             res.send(json);

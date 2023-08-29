@@ -174,8 +174,24 @@ function insertGrades(exam_id, student_id, date, score) {
     });
 }
 
-
-
+function getExam(exam_id) {
+    return new Promise((resolve, reject) => {
+        const sql = `SELECT name as exam_id FROM Exams WHERE required_block = ${exam_id}`;
+        conn.query(sql, (error, results) => {
+            if (error) {
+                reject(error);
+            } else {
+                console.log(results);
+                if (results.length > 0) {
+                    
+                    resolve(results[0]);
+                } else {
+                    resolve(null);
+                }
+            }
+        });
+    });
+}
 
   
 module.exports = {
@@ -185,6 +201,7 @@ module.exports = {
     getGeneratedTestsQuestions,
     checkAnswer,
     checkMaxScore,
-    insertGrades
+    insertGrades,
+    getExam
     // Otras funciones separadas por comas...
 };
