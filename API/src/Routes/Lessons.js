@@ -25,7 +25,6 @@ router.get('/getLessons/:level_id', async (req, res) => {
                 });
                 if(exam != null)
                     lessons.push(exam);
-               // console.log(lessons);
                 return lessons;
             });
 

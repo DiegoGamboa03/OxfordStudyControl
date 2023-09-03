@@ -68,7 +68,29 @@ router.post('/add', (req, res) => {
         res.send(`Se ha añadido al usuario '${userJson.id}'`);
     });
 
-  });
+});
+
+router.get('/login/:email/:password', (req, res) => {
+    const { email, password } = req.params;
+    const sql = `SELECT * FROM Users WHERE email = '${email}' AND PASSWORD = '${password}'`;
+    console.log('Hola');
+    conn.query(sql, (error, results) => {
+        
+        if (results.length > 0) {
+            res.json(results[0]);
+        }
+        else if (error){
+            res.statusCode = 202;
+            res.send(error.message);
+            return;
+        }
+        else{
+          res.statusCode = 202;
+          res.send('Usuario no encontrado');
+          return;
+        }
+        });
+});
 
 
 module.exports = router;
