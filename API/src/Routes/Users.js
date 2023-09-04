@@ -1,6 +1,7 @@
 const { Router } = require('express');
 const router = new Router();
 const conn = require('../Config/DatabaseConfig');
+const usersUtils = require ('../Helpers/usersUtils');
 
 router.get('/', (req, res) => {
     const sql = 'SELECT * FROM Users';
@@ -73,10 +74,14 @@ router.post('/add', (req, res) => {
 router.get('/login/:email/:password', (req, res) => {
     const { email, password } = req.params;
     const sql = `SELECT * FROM Users WHERE email = '${email}' AND PASSWORD = '${password}'`;
-    console.log('Hola');
-    conn.query(sql, (error, results) => {
+
+    conn.query(sql, async (error, results) => {
         
         if (results.length > 0) {
+            if(results[0].role == 'Estudiante'){
+                let current_block = await usersUtils.getStudentCurrentBlock(results[0].email);
+                results[0].current_block = current_block;
+            }
             res.json(results[0]);
         }
         else if (error){
