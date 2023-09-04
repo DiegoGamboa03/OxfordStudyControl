@@ -5,7 +5,7 @@ import '../models/users.dart';
 import 'api_exceptions.dart';
 
 class UsersApi {
-  static Future<User> login(String userEmail, String password) async {
+  static Future<User?> login(String userEmail, String password) async {
     final dio = Dio();
     final url = Constants.baseUrl;
     try {
@@ -16,7 +16,7 @@ class UsersApi {
         throw ApiException('Error: Rol desconocido');
       }
     } catch (e) {
-      throw ApiException('Error: $e');
+      throw Exception('Error');
     }
   }
 }

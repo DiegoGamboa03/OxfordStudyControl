@@ -13,7 +13,7 @@ class Login extends ConsumerStatefulWidget {
 class LoginState extends ConsumerState<Login> {
   late TextEditingController _emailController;
   late TextEditingController _passwordController;
-
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   @override
   void initState() {
     super.initState();
@@ -30,21 +30,91 @@ class LoginState extends ConsumerState<Login> {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+    var margin = EdgeInsets.symmetric(
+        vertical: screenHeight * 0.02, horizontal: screenWidth * 0.05);
     return Scaffold(
-        body: Center(
-      child: Column(children: [
-        TextField(controller: _emailController),
-        TextField(controller: _passwordController),
-        TextButton(
+        body: Column(mainAxisAlignment: MainAxisAlignment.end, children: [
+      Form(
+        key: _formKey,
+        child: Column(
+          children: [
+            Container(
+              margin: margin,
+              child: TextFormField(
+                controller: _emailController,
+                decoration: const InputDecoration(
+                  hintText: "Email",
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'El campo de correo electrónico no puede estar vacío';
+                  }
+                  return null; // La validación pasó
+                },
+              ),
+            ),
+            Container(
+              margin: margin,
+              child: TextFormField(
+                controller: _passwordController,
+                obscureText: true,
+                decoration: const InputDecoration(
+                  hintText: "Contraseña",
+                ),
+                keyboardType: TextInputType.visiblePassword,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'La contraseña no puede estar vacía';
+                  }
+                  return null; // La validación pasó
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+      Container(
+        margin: margin,
+        child: ElevatedButton(
             onPressed: () async {
-              String userData =
-                  '${_emailController.text} ${_passwordController.text}';
-              await ref.read(userFetcher(userData).future).then((value) {
-                ref.read(appRouterProvider).go('/');
-              });
+              if (_formKey.currentState!.validate()) {
+                String userData =
+                    '${_emailController.text} ${_passwordController.text}';
+                try {
+                  await ref.read(userFetcher(userData).future).then((value) {
+                    ref.read(appRouterProvider).go('/homepage');
+                  });
+                } catch (e) {
+                  showDialog<String>(
+                      context: context,
+                      builder: (BuildContext context) => AlertDialog(
+                              title: const Text('AlertDialog Title'),
+                              content: const Text('AlertDialog description'),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () =>
+                                      Navigator.pop(context, 'Cancel'),
+                                  child: const Text('Cancel'),
+                                ),
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context, 'OK'),
+                                  child: const Text('OK'),
+                                ),
+                              ]));
+                }
+              }
             },
-            child: const Text('Presiona'))
-      ]),
-    ));
+            child: const Text('Iniciar sesion')),
+      ),
+      Container(
+        margin: EdgeInsets.only(bottom: screenHeight * 0.05),
+        child: TextButton(
+          onPressed: () {},
+          child: const Text('¿Olvidaste tu contraseña?'),
+        ),
+      )
+    ]));
   }
 }
