@@ -11,7 +11,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
     ),
     GoRoute(
       path: '/homepage',
-      builder: (context, state) => const HomePage(),
+      builder: (context, state) => const AppNavigationBar(),
     ),
   ]);
 });

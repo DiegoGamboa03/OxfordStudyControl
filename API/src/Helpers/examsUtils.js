@@ -193,6 +193,27 @@ function getExam(exam_id) {
     });
 }
 
+function getExamsFromLevel(level_id) {
+    return new Promise((resolve, reject) => {
+        const sql = `SELECT Exams.name AS exam_name, Exams.required_block, 
+        Exams.passing_grade, Exams.num_questions, Exams.type
+        FROM Blocks
+        INNER JOIN Exams ON Blocks.required_exam = Exams.name
+        WHERE Blocks.level = '${level_id}'`;
+
+        conn.query(sql, (error, results) => {
+            if (error) {
+                reject(error);
+            } else {
+                if (results.length > 0) {
+                    resolve(results);
+                } else {
+                    resolve(null);
+                }
+            }
+        });
+    });
+}
   
 module.exports = {
     getNumQuestions,
@@ -202,6 +223,7 @@ module.exports = {
     checkAnswer,
     checkMaxScore,
     insertGrades,
-    getExam
+    getExam,
+    getExamsFromLevel
     // Otras funciones separadas por comas...
 };

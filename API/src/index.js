@@ -16,6 +16,7 @@ app.use(express.json());
 app.use('/users', require('./Routes/Users'));
 app.use('/exams', require('./Routes/Exams'));
 app.use('/lessons', require('./Routes/Lessons'));
+app.use('/blocks', require('./Routes/Blocks.js'));
 app.use('/onlineClasses', require('./Routes/OnlineClasses.js'));
 
 //starting the server
