@@ -1,8 +1,6 @@
 import 'package:oxford_studycontrol/models/users.dart';
 
 class Students extends User {
-  final int currentBlock;
-
   Students(
       {required String id,
       required String email,
@@ -13,18 +11,19 @@ class Students extends User {
       String? middleName,
       required String surname,
       String? secondSurname,
-      required this.currentBlock})
+      required String role,
+      required int? currentBlock})
       : super(
-          id: id,
-          email: email,
-          password: password,
-          phoneNumber: phoneNumber,
-          address: address,
-          firstName: firstName,
-          middleName: middleName,
-          surname: surname,
-          secondSurname: secondSurname,
-        );
+            id: id,
+            email: email,
+            password: password,
+            phoneNumber: phoneNumber,
+            address: address,
+            firstName: firstName,
+            middleName: middleName,
+            surname: surname,
+            secondSurname: secondSurname,
+            role: role);
 
   factory Students.fromJson(Map<String, dynamic> json) {
     return Students(
@@ -37,6 +36,7 @@ class Students extends User {
         middleName: json['middle_name'],
         surname: json['surname'],
         secondSurname: json['second_surname'],
+        role: json['role'],
         currentBlock: json['current_block']);
   }
 }

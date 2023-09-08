@@ -37,12 +37,12 @@ class AppTheme {
             fontWeight: FontWeight.bold,
           ),
           // ···
-          titleLarge: GoogleFonts.oswald(
+          titleLarge: GoogleFonts.roboto(
             fontSize: 30,
             fontStyle: FontStyle.italic,
           ),
-          bodyMedium: GoogleFonts.merriweather(),
-          displaySmall: GoogleFonts.pacifico(),
+          bodyMedium: GoogleFonts.roboto(),
+          displaySmall: GoogleFonts.roboto(),
         ),
       );
 }

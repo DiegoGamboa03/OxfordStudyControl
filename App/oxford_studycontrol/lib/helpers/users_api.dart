@@ -11,7 +11,7 @@ class UsersApi {
     try {
       final response = await dio.get('$url/users/login/$userEmail/$password');
       if (response.data['role'] == 'Estudiante') {
-        return Students.fromJson(response.data);
+        return User.fromJson(response.data);
       } else {
         throw ApiException('Error: Rol desconocido');
       }
