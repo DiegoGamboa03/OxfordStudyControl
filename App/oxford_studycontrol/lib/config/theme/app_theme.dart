@@ -45,4 +45,6 @@ class AppTheme {
           displaySmall: GoogleFonts.roboto(),
         ),
       );
+
+  Color getColor() => seedColor;
 }

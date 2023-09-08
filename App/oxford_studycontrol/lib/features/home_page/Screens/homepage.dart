@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:line_icons/line_icons.dart';
-import 'package:oxford_studycontrol/features/lessons/screens/lessons_viewer.dart';
+import 'package:oxford_studycontrol/features/lessons/screens/lessons_exams_list_viewer.dart';
 
 class AppNavigationBar extends ConsumerStatefulWidget {
   const AppNavigationBar({super.key});
@@ -42,7 +42,7 @@ class _AppNavigationBarState extends ConsumerState<AppNavigationBar> {
         ],
       ),
       body: <Widget>[
-        const LessonViewer(),
+        const LessonAndExamsListViewer(),
         Container(
           color: Colors.green,
           alignment: Alignment.center,

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:oxford_studycontrol/config/theme/app_theme.dart';
 import 'package:oxford_studycontrol/features/lessons/widgets/lesson_list_tile.dart';
 import '../../../providers/block_providers.dart';
 
-class LessonViewer extends ConsumerWidget {
-  const LessonViewer({super.key});
+class LessonAndExamsListViewer extends ConsumerWidget {
+  const LessonAndExamsListViewer({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -12,11 +13,11 @@ class LessonViewer extends ConsumerWidget {
     final blocks = ref.watch(filteredBlockProvider);
     final blockAsync = ref.watch(blocksFetcher);
 
-    double screenWidth = MediaQuery.of(context).size.width;
+    //double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
-    var margin = EdgeInsets.symmetric(
+    /*var margin = EdgeInsets.symmetric(
         vertical: screenHeight * 0.05, horizontal: screenWidth * 0.05);
-
+*/
     return Center(
       child: blockAsync.when(
         data: (_) {
@@ -26,16 +27,35 @@ class LessonViewer extends ConsumerWidget {
                 margin: EdgeInsets.only(
                     top: screenHeight * 0.05, bottom: screenHeight * 0.02),
                 child: SegmentedButton(
+                  style: ButtonStyle(
+                    shadowColor: MaterialStateProperty.all<Color>(Colors.white),
+                    backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                      (Set<MaterialState> states) {
+                        if (states.contains(MaterialState.selected)) {
+                          return seedColor;
+                        }
+                        return Colors.white;
+                      },
+                    ),
+                    foregroundColor: MaterialStateProperty.resolveWith<Color>(
+                      (Set<MaterialState> states) {
+                        if (states.contains(MaterialState.selected)) {
+                          return Colors.white;
+                        }
+                        return Colors.black;
+                      },
+                    ),
+                  ),
                   segments: const [
                     ButtonSegment(
-                        value: blocksFilter.basico, icon: Text('Basico')),
+                        value: BlocksFilter.basico, icon: Text('Basico')),
                     ButtonSegment(
-                        value: blocksFilter.intermedio,
+                        value: BlocksFilter.intermedio,
                         icon: Text('Intermedio')),
                     ButtonSegment(
-                        value: blocksFilter.avanzado, icon: Text('Avanzado')),
+                        value: BlocksFilter.avanzado, icon: Text('Avanzado')),
                   ],
-                  selected: <blocksFilter>{currentFilter},
+                  selected: <BlocksFilter>{currentFilter},
                   onSelectionChanged: (value) {
                     ref.read(blocksFilterProvider.notifier).state = value.first;
                   },

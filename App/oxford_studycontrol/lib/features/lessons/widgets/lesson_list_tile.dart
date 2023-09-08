@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:oxford_studycontrol/config/theme/app_theme.dart';
 import '../../../models/blocks.dart';
 import '../../../providers/user_provider.dart';
 
@@ -18,7 +19,8 @@ class LessonListTile extends ConsumerWidget {
         for (var lesson in block.lessons)
           Card(
             child: ListTile(
-              leading: const Icon(LineIcons.book),
+              textColor: seedColor,
+              leading: const Icon(LineIcons.play),
               title: Text(lesson),
               enabled: isEnabled,
               onTap: () {},
@@ -27,6 +29,7 @@ class LessonListTile extends ConsumerWidget {
         if (block.requiredExam != null)
           Card(
             child: ListTile(
+              textColor: seedColor,
               leading: const Icon(LineIcons.pen),
               title: Text(block.requiredExam!),
               enabled: isEnabled,
