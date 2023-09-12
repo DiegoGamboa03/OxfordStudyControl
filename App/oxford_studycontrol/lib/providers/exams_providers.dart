@@ -6,6 +6,8 @@ import 'package:oxford_studycontrol/providers/user_provider.dart';
 
 final examProvider = StateProvider<Exam?>((ref) => null);
 
+final answeredQuestionProvider = StateProvider<int>((ref) => 0);
+
 final examFetcher = FutureProvider.family<Exam?, String>((ref, examName) async {
   try {
     await ExamApi.getExam(examName).then((data) {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:oxford_studycontrol/config/theme/app_theme.dart';
 import 'package:oxford_studycontrol/features/exams_viewer/widgets/question_widget.dart';
 import 'package:oxford_studycontrol/providers/exams_providers.dart';
 
@@ -22,7 +23,14 @@ class ExamViewer extends ConsumerWidget {
                       onPressed: () {},
                     ),
                     centerTitle: true,
-                    title: Expanded(child: Text(exam.name)),
+                    title: Expanded(
+                        child: Text(
+                      exam.name,
+                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: seedColor,
+                          ),
+                    )),
                   ),
                   SliverList.builder(
                       itemCount: exam.questions?.length,

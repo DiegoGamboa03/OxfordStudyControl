@@ -37,13 +37,17 @@ class AppTheme {
             fontWeight: FontWeight.bold,
           ),
           // ···
-          titleLarge: GoogleFonts.roboto(
-            fontSize: 22,
-            fontStyle: FontStyle.italic,
-          ),
+          titleLarge: GoogleFonts.roboto(fontSize: 22),
           bodyMedium: GoogleFonts.roboto(),
           displaySmall: GoogleFonts.roboto(),
         ),
+        checkboxTheme: CheckboxThemeData(
+            checkColor: MaterialStateProperty.all<Color>(seedColor),
+            overlayColor: MaterialStateProperty.all<Color>(seedColor),
+            side: const BorderSide(
+              color: seedColor,
+              style: BorderStyle.solid,
+            )),
       );
 
   Color getColor() => seedColor;

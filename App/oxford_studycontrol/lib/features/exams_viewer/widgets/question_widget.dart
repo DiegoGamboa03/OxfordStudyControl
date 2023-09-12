@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:oxford_studycontrol/config/theme/app_theme.dart';
 import 'package:oxford_studycontrol/models/question.dart';
+import 'package:oxford_studycontrol/providers/exams_providers.dart';
 
 class QuestionWidget extends ConsumerStatefulWidget {
   final Question question;
@@ -34,20 +35,20 @@ class _QuestionWidgetState extends ConsumerState<QuestionWidget> {
 
     return Card(
       child: Padding(
-        padding: EdgeInsets.only(bottom: screenHeight * 0.05),
+        padding: EdgeInsets.only(bottom: screenHeight * 0.02),
         child: Column(
           children: [
             Container(
               margin: EdgeInsets.only(
-                top: screenHeight * 0.01,
-                bottom: screenHeight * 0.03,
+                top: screenHeight * 0.03,
+                bottom: screenHeight * 0.01,
                 right: screenWidth * 0.05,
                 left: screenHeight * 0.02,
               ),
               alignment: Alignment.centerLeft,
               child: Text(questionString,
                   style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.w700,
                         fontStyle: FontStyle.normal,
                         color: seedColor,
                       )),
@@ -61,7 +62,7 @@ class _QuestionWidgetState extends ConsumerState<QuestionWidget> {
                       crossAxisCount: 2, // number of items in each row
                       mainAxisSpacing:
                           screenWidth * 0.02, // spacing between rows
-                      crossAxisSpacing: screenHeight * 0.01,
+                      crossAxisSpacing: screenHeight * 0.001,
                     ),
                     padding: EdgeInsets.zero,
                     itemCount: widget.question.options.length,
@@ -78,18 +79,26 @@ class _QuestionWidgetState extends ConsumerState<QuestionWidget> {
                                   color: seedColor,
                                 ),
                           ),
+                          checkColor: Colors.white,
                           value: selectedIndex == index,
                           controlAffinity: ListTileControlAffinity.leading,
-                          contentPadding:
-                              EdgeInsets.only(bottom: screenHeight * 0.005),
+                          contentPadding: EdgeInsets.zero,
                           visualDensity: VisualDensity.compact,
                           dense: true,
                           onChanged: (value) {
                             setState(
                               () {
                                 if (value != null && value) {
+                                  if (selectedIndex == null) {
+                                    ref
+                                        .read(answeredQuestionProvider.notifier)
+                                        .update((state) => state + 1);
+                                  }
                                   selectedIndex = index;
                                 } else {
+                                  ref
+                                      .read(answeredQuestionProvider.notifier)
+                                      .update((state) => state - 1);
                                   selectedIndex = null;
                                 }
                               },
@@ -106,48 +115,3 @@ class _QuestionWidgetState extends ConsumerState<QuestionWidget> {
     );
   }
 }
-/*class QuestionWidget extends ConsumerWidget {
-  final Question question;
-  const QuestionWidget({super.key, required this.question});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    String questionString = '${question.questionPosition}-. ${question.id}';
-    bool isMultipleSelection = question.type == 'seleccion Multiple';
-    double screenWidth = MediaQuery.of(context).size.width;
-    double screenHeight = MediaQuery.of(context).size.height;
-    int? selectedIndex;
-    return Card(
-      child: Column(
-        children: [
-          Text(questionString),
-          isMultipleSelection
-              ? GridView.builder(
-                  shrinkWrap: true,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2, // number of items in each row
-                    mainAxisSpacing: screenWidth * 0.05, // spacing between rows
-                    crossAxisSpacing:
-                        screenHeight * 0.01, // spacing between columns
-                  ),
-                  itemCount: question.options.length,
-                  itemBuilder: (context, index) {
-                    return CheckboxListTile(
-                      title: Text(question.options[index].toString()),
-                      value: selectedIndex == index,
-                      onChanged: (value) {
-                        if (value != null && value) {
-                          selectedIndex = index;
-                        } else {
-                          selectedIndex = null;
-                        }
-                      },
-                    );
-                  },
-                )
-              : Container()
-        ],
-      ),
-    );
-  }
-}*/
