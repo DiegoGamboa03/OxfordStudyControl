@@ -29,8 +29,8 @@ class _QuestionWidgetState extends ConsumerState<QuestionWidget> {
     double screenHeight = MediaQuery.of(context).size.height;
 
     /*24 is for notification bar on Android*/
-    final double itemHeight = (screenHeight - kToolbarHeight - 24) / 11;
-    final double itemWidth = screenWidth / 1.5;
+    final double itemHeight = (screenHeight - kToolbarHeight - 24) / 8;
+    final double itemWidth = screenWidth / 2;
 
     return Card(
       child: Padding(
@@ -40,19 +40,17 @@ class _QuestionWidgetState extends ConsumerState<QuestionWidget> {
             Container(
               margin: EdgeInsets.only(
                 top: screenHeight * 0.01,
-                bottom: screenHeight * 0.0003,
+                bottom: screenHeight * 0.03,
                 right: screenWidth * 0.05,
                 left: screenHeight * 0.02,
               ),
               alignment: Alignment.centerLeft,
-              child: Expanded(
-                child: Text(questionString,
-                    style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                          fontWeight: FontWeight.w600,
-                          fontStyle: FontStyle.normal,
-                          color: seedColor,
-                        )),
-              ),
+              child: Text(questionString,
+                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                        fontWeight: FontWeight.w600,
+                        fontStyle: FontStyle.normal,
+                        color: seedColor,
+                      )),
             ),
             isMultipleSelection
                 ? GridView.builder(
@@ -68,32 +66,36 @@ class _QuestionWidgetState extends ConsumerState<QuestionWidget> {
                     padding: EdgeInsets.zero,
                     itemCount: widget.question.options.length,
                     itemBuilder: (context, index) {
-                      return CheckboxListTile(
-                        title: Text(
-                          widget.question.options[index].toString(),
-                          style:
-                              Theme.of(context).textTheme.bodyMedium!.copyWith(
-                                    fontSize: 17,
-                                    color: seedColor,
-                                  ),
+                      return Center(
+                        child: CheckboxListTile(
+                          title: Text(
+                            widget.question.options[index].toString(),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium!
+                                .copyWith(
+                                  fontSize: 17,
+                                  color: seedColor,
+                                ),
+                          ),
+                          value: selectedIndex == index,
+                          controlAffinity: ListTileControlAffinity.leading,
+                          contentPadding:
+                              EdgeInsets.only(bottom: screenHeight * 0.005),
+                          visualDensity: VisualDensity.compact,
+                          dense: true,
+                          onChanged: (value) {
+                            setState(
+                              () {
+                                if (value != null && value) {
+                                  selectedIndex = index;
+                                } else {
+                                  selectedIndex = null;
+                                }
+                              },
+                            );
+                          },
                         ),
-                        value: selectedIndex == index,
-                        controlAffinity: ListTileControlAffinity.leading,
-                        contentPadding:
-                            EdgeInsets.only(bottom: screenHeight * 0.005),
-                        visualDensity: VisualDensity.compact,
-                        dense: true,
-                        onChanged: (value) {
-                          setState(
-                            () {
-                              if (value != null && value) {
-                                selectedIndex = index;
-                              } else {
-                                selectedIndex = null;
-                              }
-                            },
-                          );
-                        },
                       );
                     },
                   )
