@@ -38,7 +38,7 @@ class AppTheme {
           ),
           // ···
           titleLarge: GoogleFonts.roboto(
-            fontSize: 30,
+            fontSize: 22,
             fontStyle: FontStyle.italic,
           ),
           bodyMedium: GoogleFonts.roboto(),

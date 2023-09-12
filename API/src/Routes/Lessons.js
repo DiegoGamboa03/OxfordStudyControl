@@ -4,6 +4,27 @@ const conn = require('../Config/DatabaseConfig');
 const lessonUtils = require ('../Helpers/lessosnsUtils');
 const examUtils = require ('../Helpers/examsUtils');
 
+router.get('/:name', (req, res) => {
+    const { name } = req.params;
+    const sql = `SELECT * FROM Lessons WHERE name = '${name}'`;
+
+    conn.query(sql, (error, results) => {
+        
+        if (results.length > 0) {
+            res.json(results[0]);
+        }
+        else if (error){
+            res.send(error.message);
+            return;
+        }
+        else{
+          res.statusCode = 202;
+          res.send('No se encontraron usuarios');
+          return;
+        }
+    });
+});
+
 router.get('/getLessons/:level_id', async (req, res) => {
     const { level_id } = req.params;
     try {

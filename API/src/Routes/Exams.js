@@ -135,24 +135,32 @@ router.get('/generate', async (req, res) => {
         const insertions = questions.map((question, index) => {
             return new Promise(async (resolve, reject) => {
                 const sql = 'INSERT INTO GeneratedTestQuestions SET ?';
-                const generatedTestQuestionsJson = {
+                const generatedTestQuestionsJsonForInsert = {  //El que se usa para insertar en la bbdd
                     student_id: req.body.student_id,
                     exam_id: req.body.exam_id,
                     generated_test_date: dateTime,
                     question_id: question,
                     question_position: index + 1
                 };
+                const generatedTestQuestionJson = {
+                    question_id: question,
+                    question_position: index + 1
+                }
+
 
                 examUtils.getQuestionOptions(question).then(options =>{
-                    console.log(options + ' ' + question)
-                    generatedTestQuestionsJson.options = options;
+                    generatedTestQuestionJson.options = options;
                 });
 
-                conn.query(sql, generatedTestQuestionsJson, error => {
+                examUtils.getQuestionType(question).then(type =>{
+                    generatedTestQuestionJson.type = type;
+                });
+
+                conn.query(sql, generatedTestQuestionsJsonForInsert, error => {
                     if (error) {
                         reject(error);
                     } else {
-                        resolve(generatedTestQuestionsJson);
+                        resolve(generatedTestQuestionJson);
                     }
                 });
             });
@@ -161,7 +169,7 @@ router.get('/generate', async (req, res) => {
         const generatedQuestionsArray = await Promise.all(insertions);
         generatedTestJson.questions = generatedQuestionsArray;
 
-        res.send(generatedTestJson);
+        res.send(generatedQuestionsArray);
     } catch (error) {
         res.statusCode = 202;
         res.send(error.sqlMessage || error.message);

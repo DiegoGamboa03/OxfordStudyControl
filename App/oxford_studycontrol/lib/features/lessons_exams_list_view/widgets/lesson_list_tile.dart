@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:oxford_studycontrol/config/router/app_router.dart';
 import 'package:oxford_studycontrol/config/theme/app_theme.dart';
+import 'package:oxford_studycontrol/providers/exams_providers.dart';
+import 'package:oxford_studycontrol/providers/lesson_provider.dart';
 import '../../../models/blocks.dart';
 import '../../../providers/user_provider.dart';
 
@@ -23,7 +26,11 @@ class LessonListTile extends ConsumerWidget {
               leading: const Icon(LineIcons.play),
               title: Text(lesson),
               enabled: isEnabled,
-              onTap: () {},
+              onTap: () async {
+                await ref.read(lessonFetcher(lesson).future).then((value) {
+                  ref.read(appRouterProvider).go('/viewLesson');
+                });
+              },
             ),
           ),
         if (block.requiredExam != null)
@@ -33,7 +40,13 @@ class LessonListTile extends ConsumerWidget {
               leading: const Icon(LineIcons.pen),
               title: Text(block.requiredExam!),
               enabled: isEnabled,
-              onTap: () {},
+              onTap: () async {
+                await ref
+                    .read(examFetcher(block.requiredExam!).future)
+                    .then((value) {
+                  ref.read(appRouterProvider).go('/examPreview');
+                });
+              },
             ),
           ),
       ],

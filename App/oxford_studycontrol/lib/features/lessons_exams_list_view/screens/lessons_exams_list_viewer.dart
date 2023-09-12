@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:oxford_studycontrol/config/theme/app_theme.dart';
-import 'package:oxford_studycontrol/features/lessons/widgets/lesson_list_tile.dart';
+import 'package:oxford_studycontrol/features/lessons_exams_list_view/widgets/lesson_list_tile.dart';
 import '../../../providers/block_providers.dart';
 
 class LessonAndExamsListViewer extends ConsumerWidget {

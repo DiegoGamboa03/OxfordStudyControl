@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:line_icons/line_icons.dart';
-import 'package:oxford_studycontrol/features/lessons/screens/lessons_exams_list_viewer.dart';
+import 'package:oxford_studycontrol/features/lessons_exams_list_view/screens/lessons_exams_list_viewer.dart';
 
 class AppNavigationBar extends ConsumerStatefulWidget {
   const AppNavigationBar({super.key});

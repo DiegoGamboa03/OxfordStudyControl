@@ -88,7 +88,7 @@ function getQuestionOptions(question_id) {
             } else {
                 if (results.length > 0) {
                     let json = JSON.parse(JSON.stringify(results));
-                    const transformedArray = json.map(option => parseInt(option.OPTION));
+                    const transformedArray = json.map(option => option.OPTION.toString());
                     resolve(transformedArray);
                 } else {
                     resolve([]);
@@ -174,6 +174,26 @@ function insertGrades(exam_id, student_id, date, score) {
     });
 }
 
+
+function getQuestionType(question_id) {
+    return new Promise((resolve, reject) => {
+        const sql = `SELECT question_type FROM Questions WHERE question = '${question_id}'`;
+
+        conn.query(sql, (error, results) => {
+            if (error) {
+                reject(error);
+            } else {
+                if (results.length > 0) {
+                    const json = JSON.parse(JSON.stringify(results));
+                    resolve(json[0].question_type);
+                } else {
+                    resolve(-1);
+                }
+            }
+        });
+    });
+}
+
 function getExam(exam_id) {
     return new Promise((resolve, reject) => {
         const sql = `SELECT name as exam_id FROM Exams WHERE required_block = ${exam_id}`;
@@ -224,6 +244,7 @@ module.exports = {
     checkMaxScore,
     insertGrades,
     getExam,
-    getExamsFromLevel
+    getExamsFromLevel,
+    getQuestionType
     // Otras funciones separadas por comas...
 };
