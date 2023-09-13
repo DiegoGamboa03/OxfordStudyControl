@@ -169,7 +169,7 @@ router.get('/generate', async (req, res) => {
         const generatedQuestionsArray = await Promise.all(insertions);
         generatedTestJson.questions = generatedQuestionsArray;
 
-        res.send(generatedQuestionsArray);
+        res.send(generatedTestJson);
     } catch (error) {
         res.statusCode = 202;
         res.send(error.sqlMessage || error.message);

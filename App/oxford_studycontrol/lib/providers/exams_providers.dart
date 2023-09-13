@@ -25,9 +25,12 @@ final questionFetcher =
   try {
     final userId = ref.read(userProvider)!.id;
     await ExamApi.generate(examName, userId).then((data) {
-      if (data != null) {
+      var (questions, date) = data;
+      if (questions != null) {
         ref.watch(examProvider.notifier).update((state) {
-          state!.setQuestions = data;
+          state!; //Le estoy diciendo que no es null
+          state.setQuestions = questions;
+          state.setGeneratedDate = date;
           return state;
         });
       }

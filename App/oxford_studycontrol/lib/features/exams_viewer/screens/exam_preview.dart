@@ -9,12 +9,14 @@ class ExamPreview extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final exam = ref.watch(examProvider);
-    return Center(
-      child: ElevatedButton(
-        onPressed: () {
-          ref.read(appRouterProvider).go('/exam');
-        },
-        child: const Text('Iniciar el examen'),
+    return Scaffold(
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            ref.read(appRouterProvider).go('/exam');
+          },
+          child: const Text('Iniciar el examen'),
+        ),
       ),
     );
   }

@@ -5,6 +5,7 @@ class Exam {
   double? passingGrade;
   int? numQuestions;
   String? type;
+  DateTime? generatedDate;
   List<Question>? questions;
 
   Exam({required this.name, this.passingGrade, this.numQuestions, this.type});
@@ -19,5 +20,9 @@ class Exam {
 
   set setQuestions(List<Question>? newQuestions) {
     questions = newQuestions;
+  }
+
+  set setGeneratedDate(DateTime newDate) {
+    generatedDate = newDate;
   }
 }

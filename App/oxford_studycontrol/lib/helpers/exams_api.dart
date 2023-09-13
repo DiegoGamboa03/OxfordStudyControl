@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:oxford_studycontrol/constants.dart';
 import 'package:oxford_studycontrol/models/exams.dart';
@@ -18,7 +17,8 @@ class ExamApi {
     }
   }
 
-  static Future<List<Question>?> generate(String name, String studentId) async {
+  static Future<(List<Question>?, DateTime)> generate(
+      String name, String studentId) async {
     final dio = Dio();
     final url = Constants.baseUrl;
 
@@ -30,10 +30,25 @@ class ExamApi {
           }),
           data: jsonEncode(params));
       List<Question> questionList = [];
-      response.data.forEach((question) {
+
+      String dateTimeString = response.data['test_date'];
+
+      List<String> parts = dateTimeString.split(' ');
+      List<String> dateParts = parts[0].split('-');
+      List<String> timeParts = parts[1].split(':');
+
+      int year = int.parse(dateParts[0]);
+      int month = int.parse(dateParts[1]);
+      int day = int.parse(dateParts[2]);
+      int hour = int.parse(timeParts[0]);
+      int minute = int.parse(timeParts[1]);
+      int second = int.parse(timeParts[2]);
+
+      DateTime date = DateTime(year, month, day, hour, minute, second);
+      response.data['questions'].forEach((question) {
         questionList.add(Question.fromJson(question));
       });
-      return questionList;
+      return (questionList, date);
     } catch (e) {
       throw Exception('Error');
     }

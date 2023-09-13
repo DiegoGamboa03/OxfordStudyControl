@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:oxford_studycontrol/config/router/app_router.dart';
 import 'package:oxford_studycontrol/config/theme/app_theme.dart';
 import 'package:oxford_studycontrol/features/exams_viewer/widgets/question_widget.dart';
 import 'package:oxford_studycontrol/providers/exams_providers.dart';
@@ -20,7 +21,9 @@ class ExamViewer extends ConsumerWidget {
                   SliverAppBar(
                     leading: IconButton(
                       icon: const Icon(Icons.arrow_back),
-                      onPressed: () {},
+                      onPressed: () {
+                        ref.read(appRouterProvider).pop();
+                      },
                     ),
                     centerTitle: true,
                     title: Expanded(
@@ -43,7 +46,10 @@ class ExamViewer extends ConsumerWidget {
                     child: Align(
                       alignment: Alignment.center,
                       child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            var x = ref.read(examProvider)!.generatedDate;
+                            print(x);
+                          },
                           child: const Text('Terminar examen')),
                     ),
                   )
@@ -56,21 +62,3 @@ class ExamViewer extends ConsumerWidget {
     );
   }
 }
-
-   /*Column(
-                children: [
-                  Expanded(
-                    child: ListView.builder(
-                        itemCount: exam.questions?.length,
-                        itemBuilder: (context, index) {
-                          final question = exam.questions![index];
-
-                          return QuestionWidget(question: question);
-                        }),
-                  ),
-                  Center(
-                    child: ElevatedButton(
-                        onPressed: () {}, child: Text('Entregar examen')),
-                  )
-                ],
-              );*/
