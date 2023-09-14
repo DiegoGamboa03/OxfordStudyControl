@@ -53,4 +53,15 @@ class ExamApi {
       throw Exception('Error');
     }
   }
+
+  static Future<Exam?> evaluate(String name) async {
+    final dio = Dio();
+    final url = Constants.baseUrl;
+    try {
+      final response = await dio.get('$url/exams/getExam/$name');
+      return Exam.fromJson(response.data);
+    } catch (e) {
+      throw Exception('Error');
+    }
+  }
 }

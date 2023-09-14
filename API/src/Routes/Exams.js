@@ -219,7 +219,10 @@ router.post('/evaluateExam', async (req, res) => {
 
             examUtils.insertGrades(req.body.exam_id,req.body.student_id, req.body.generated_test_date, final_score)
             .then(result => {
-                res.send('Se ha añadido la calificacion');
+                const json = {
+                    score: final_score,
+                };
+                res.send(json);
             })
             .catch(error => {
                 console.log(error.sqlMessage);

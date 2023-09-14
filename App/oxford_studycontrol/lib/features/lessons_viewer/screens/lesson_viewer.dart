@@ -21,7 +21,7 @@ class LessonViewer extends ConsumerWidget {
       ),
     );
 
-    double screenWidth = MediaQuery.of(context).size.width;
+    //double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(

@@ -12,6 +12,12 @@ class ExamViewer extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final exam = ref.watch(examProvider);
     final questionAsync = ref.watch(questionFetcher(exam!.name));
+
+    const snackBar = SnackBar(
+      content: Text(' ¡Cuidado! no todas tus preguntas han sido respondidas'),
+    );
+    int buttonPresses = 0;
+
     return Scaffold(
       body: Center(
         child: questionAsync.when(
@@ -47,8 +53,14 @@ class ExamViewer extends ConsumerWidget {
                       alignment: Alignment.center,
                       child: ElevatedButton(
                           onPressed: () {
-                            var x = ref.read(examProvider)!.generatedDate;
-                            print(x);
+                            final allAnswered = ref.read(isAllAnswered);
+                            if (allAnswered || buttonPresses > 0) {
+                              print('jp;aa');
+                            } else if (!allAnswered) {
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(snackBar);
+                              buttonPresses++;
+                            }
                           },
                           child: const Text('Terminar examen')),
                     ),

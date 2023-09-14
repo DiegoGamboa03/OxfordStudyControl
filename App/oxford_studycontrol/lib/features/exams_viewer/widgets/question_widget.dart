@@ -88,17 +88,19 @@ class _QuestionWidgetState extends ConsumerState<QuestionWidget> {
                           onChanged: (value) {
                             setState(
                               () {
+                                Question question = widget.question;
                                 if (value != null && value) {
-                                  if (selectedIndex == null) {
-                                    ref
-                                        .read(answeredQuestionProvider.notifier)
-                                        .update((state) => state + 1);
-                                  }
                                   selectedIndex = index;
+                                  ref
+                                      .read(questionsStateNotifierProvider
+                                          .notifier)
+                                      .answerQuestion(
+                                          question.id, question.options[index]);
                                 } else {
                                   ref
-                                      .read(answeredQuestionProvider.notifier)
-                                      .update((state) => state - 1);
+                                      .read(questionsStateNotifierProvider
+                                          .notifier)
+                                      .answerQuestion(question.id, null);
                                   selectedIndex = null;
                                 }
                               },
@@ -108,7 +110,7 @@ class _QuestionWidgetState extends ConsumerState<QuestionWidget> {
                       );
                     },
                   )
-                : Container()
+                : Container() //Aqui va la estructura para preguntas de tipo desarrollo
           ],
         ),
       ),

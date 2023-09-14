@@ -6,7 +6,62 @@ import 'package:oxford_studycontrol/providers/user_provider.dart';
 
 final examProvider = StateProvider<Exam?>((ref) => null);
 
-final answeredQuestionProvider = StateProvider<int>((ref) => 0);
+final isAllAnswered = StateProvider<bool>((ref) => false);
+
+final questionsStateNotifierProvider =
+    StateNotifierProvider<QuestionsNotifier, List<Question>>((ref) {
+  return QuestionsNotifier(ref);
+});
+
+class QuestionsNotifier extends StateNotifier<List<Question>> {
+  QuestionsNotifier(this.ref) : super([]);
+
+  final Ref ref;
+
+  void addQuestion(Question question) {
+    state = [...state, question];
+  }
+
+  void addMultipleQuestion(List<Question> questions) {
+    for (var question in questions) {
+      addQuestion(Question(
+          id: question.id,
+          questionPosition: question.questionPosition,
+          options: question.options,
+          type: question.type,
+          answer: question.answer));
+    }
+  }
+
+  void answerQuestion(String questionID, String? answer) {
+    var temp = List<Question>.of(state);
+    int index = temp.indexWhere((element) => element.id == questionID);
+    var question = temp[index];
+    temp.replaceRange(index, index + 1, [
+      Question(
+          id: question.id,
+          questionPosition: question.questionPosition,
+          options: question.options,
+          type: question.type,
+          answer: answer)
+    ]);
+    checkAllAnswered();
+    state = temp;
+  }
+
+  void checkAllAnswered() {
+    var flag = true;
+
+    for (var element in state) {
+      if (element.answer == null) {
+        flag = false;
+      }
+    }
+    ref.watch(isAllAnswered.notifier).update((state) {
+      return flag;
+    });
+  }
+}
 
 final examFetcher = FutureProvider.family<Exam?, String>((ref, examName) async {
   try {
@@ -33,6 +88,9 @@ final questionFetcher =
           state.setGeneratedDate = date;
           return state;
         });
+        ref
+            .watch(questionsStateNotifierProvider.notifier)
+            .addMultipleQuestion(questions);
       }
       return data;
     });
