@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:oxford_studycontrol/config/router/app_router.dart';
 import 'package:oxford_studycontrol/config/theme/app_theme.dart';
 import 'package:oxford_studycontrol/features/exams_viewer/widgets/question_widget.dart';
+import 'package:oxford_studycontrol/models/answers.dart';
 import 'package:oxford_studycontrol/providers/exams_providers.dart';
 
 class ExamViewer extends ConsumerWidget {
@@ -52,10 +53,13 @@ class ExamViewer extends ConsumerWidget {
                     child: Align(
                       alignment: Alignment.center,
                       child: ElevatedButton(
-                          onPressed: () {
+                          onPressed: () async {
                             final allAnswered = ref.read(isAllAnswered);
                             if (allAnswered || buttonPresses > 0) {
-                              print('jp;aa');
+                              List<Answer> answers = ref.read(answersProvider);
+                              var score =
+                                  await ref.read(scoreFetcher(answers).future);
+                              print(score);
                             } else if (!allAnswered) {
                               ScaffoldMessenger.of(context)
                                   .showSnackBar(snackBar);

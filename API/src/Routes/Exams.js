@@ -105,6 +105,16 @@ router.get('/grades/:student_id', (req, res) => {
 
 router.get('/generate', async (req, res) => {
     try {
+
+        const isInBreak = await examUtils.isInBreak(req.body.student_id);
+        if(isInBreak > 0 ){
+            res.statusCode = 202;
+            const json = {
+                isInBreak: 1
+            };
+            res.send(json);
+            return;
+        }
         const numQuestions = await examUtils.getNumQuestions(req.body.exam_id);
         const questions = await examUtils.getQuestions(req.body.exam_id, numQuestions);
         
@@ -184,7 +194,7 @@ router.post('/evaluateExam', async (req, res) => {
             generated_test_date: req.body.generated_test_date,
             answers: req.body.answers
         };
-
+        console.log(generatedTestJson);
         let num_questions = await examUtils.getNumQuestions(req.body.exam_id);
 
 
@@ -217,7 +227,7 @@ router.post('/evaluateExam', async (req, res) => {
                 });
             }
 
-            examUtils.insertGrades(req.body.exam_id,req.body.student_id, req.body.generated_test_date, final_score)
+            examUtils.insertGrades(req.body.exam_id,req.body.student_id, req.body.generated_test_date, final_score.toFixed(2))
             .then(result => {
                 const json = {
                     score: final_score,
@@ -239,6 +249,15 @@ router.post('/evaluateExam', async (req, res) => {
     }
 });
 
+router.get('/checkBreak/:student_id', async (req,res) => {
+    const { student_id } = req.params;
+    examUtils.isInBreak(student_id).then(jsonIsInBreak =>{
+        res.send(jsonIsInBreak);
+        return;
+    }).catch(error => {
+        console.error('Error:', error.message);
+    });
+});
 
 
 module.exports = router;

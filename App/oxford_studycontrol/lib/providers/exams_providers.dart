@@ -1,10 +1,21 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:oxford_studycontrol/helpers/exams_api.dart';
+import 'package:oxford_studycontrol/models/answers.dart';
 import 'package:oxford_studycontrol/models/exams.dart';
 import 'package:oxford_studycontrol/models/question.dart';
 import 'package:oxford_studycontrol/providers/user_provider.dart';
 
 final examProvider = StateProvider<Exam?>((ref) => null);
+
+final answersProvider = StateProvider<List<Answer>>((ref) {
+  List<Answer> answers = [];
+
+  ref.watch(questionsStateNotifierProvider).forEach((question) {
+    answers.add(Answer(questionID: question.id, answer: question.answer));
+  });
+
+  return answers;
+});
 
 final isAllAnswered = StateProvider<bool>((ref) => false);
 
@@ -98,4 +109,27 @@ final questionFetcher =
     rethrow;
   }
   return null;
+});
+
+final scoreFetcher =
+    FutureProvider.family<double, List<Answer>>((ref, answers) async {
+  try {
+    final userId = ref.read(userProvider)!.id;
+    final examId = ref.read(examProvider)!.name;
+    final examDate = ref.read(examProvider)!.generatedDate!;
+    final data = await ExamApi.evaluate(answers, examId, userId, examDate);
+    return data;
+  } catch (e) {
+    rethrow;
+  }
+});
+
+final isInBreakFetcher = FutureProvider<(bool, DateTime?)>((ref) async {
+  try {
+    final userId = ref.read(userProvider)!.id;
+    final data = await ExamApi.getIsInBreak(userId);
+    return data;
+  } catch (e) {
+    rethrow;
+  }
 });

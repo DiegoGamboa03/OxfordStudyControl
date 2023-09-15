@@ -137,8 +137,9 @@ function checkMaxScore(question_id) {
                 reject(error);
             } else {
                 if (results.length > 0) {
-                    let  max_score = JSON.parse(JSON.stringify(results))[0].max_score;
-                    resolve(parseFloat(max_score).toFixed(1));
+                    let max_score = JSON.parse(JSON.stringify(results))[0].max_score;
+                    resolve(parseFloat(max_score));
+                    
                 } else {
                     resolve(null);
                 }
@@ -160,11 +161,13 @@ function insertGrades(exam_id, student_id, date, score) {
     return new Promise((resolve, reject) => {
         const sql = `INSERT INTO Grades (exam_id, student_id, test_date, score)
         VALUES (?, ?, ?, ?)`;
-
+        console.log(sql);
         let values = [exam_id, student_id, date, score];
 
         conn.query(sql, values, (error, result) => {
+            console.log(sql);
             if (error) {
+                error.sqlMessage
                 console.log(error.sql);
                 reject(error);
             } else {
@@ -234,7 +237,26 @@ function getExamsFromLevel(level_id) {
         });
     });
 }
-  
+
+function isInBreak(student_id) {
+    return new Promise((resolve, reject) => {
+        const sql = `SELECT COUNT(student_id) AS studentCount,finish_date FROM StudentsBreak WHERE student_id = '${student_id}'`;
+
+        conn.query(sql, (error, results) => {
+            if (error) {
+                reject(error);
+            } else {
+                const studentCount = results[0].studentCount;
+                const date = results[0].finish_date;
+                const json = {
+                    studentCount,
+                    date
+                }; 
+                resolve(json);
+            }
+        });
+    });
+}
 module.exports = {
     getNumQuestions,
     getQuestions,
@@ -245,6 +267,7 @@ module.exports = {
     insertGrades,
     getExam,
     getExamsFromLevel,
-    getQuestionType
+    getQuestionType,
+    isInBreak
     // Otras funciones separadas por comas...
 };
