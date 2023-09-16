@@ -12,7 +12,8 @@ class QuestionWidget extends ConsumerStatefulWidget {
   ConsumerState<ConsumerStatefulWidget> createState() => _QuestionWidgetState();
 }
 
-class _QuestionWidgetState extends ConsumerState<QuestionWidget> {
+class _QuestionWidgetState extends ConsumerState<QuestionWidget>
+    with AutomaticKeepAliveClientMixin {
   int? selectedIndex;
   late String questionString;
   late bool isMultipleSelection;
@@ -23,6 +24,9 @@ class _QuestionWidgetState extends ConsumerState<QuestionWidget> {
     isMultipleSelection = question.type == 'seleccion Multiple';
     super.initState();
   }
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   Widget build(BuildContext context) {
@@ -54,19 +58,16 @@ class _QuestionWidgetState extends ConsumerState<QuestionWidget> {
                       )),
             ),
             isMultipleSelection
-                ? GridView.builder(
+                ? GridView.count(
                     physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      childAspectRatio: (itemWidth / itemHeight),
-                      crossAxisCount: 2, // number of items in each row
-                      mainAxisSpacing:
-                          screenWidth * 0.02, // spacing between rows
-                      crossAxisSpacing: screenHeight * 0.001,
-                    ),
+                    childAspectRatio: (itemWidth / itemHeight),
+                    crossAxisCount: 2, // number of items in each row
+                    mainAxisSpacing: screenWidth * 0.02, // spacing between rows
+                    crossAxisSpacing: screenHeight * 0.001,
                     padding: EdgeInsets.zero,
-                    itemCount: widget.question.options.length,
-                    itemBuilder: (context, index) {
+                    children:
+                        List.generate(widget.question.options.length, (index) {
                       return Center(
                         child: CheckboxListTile(
                           title: Text(
@@ -108,7 +109,7 @@ class _QuestionWidgetState extends ConsumerState<QuestionWidget> {
                           },
                         ),
                       );
-                    },
+                    }),
                   )
                 : Container() //Aqui va la estructura para preguntas de tipo desarrollo
           ],
