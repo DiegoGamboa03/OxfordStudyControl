@@ -56,8 +56,8 @@ class QuestionsNotifier extends StateNotifier<List<Question>> {
           type: question.type,
           answer: answer)
     ]);
-    checkAllAnswered();
     state = temp;
+    checkAllAnswered();
   }
 
   void checkAllAnswered() {

@@ -57,9 +57,9 @@ class ExamViewer extends ConsumerWidget {
                             final allAnswered = ref.read(isAllAnswered);
                             if (allAnswered || buttonPresses > 0) {
                               List<Answer> answers = ref.read(answersProvider);
-                              var score =
-                                  await ref.read(scoreFetcher(answers).future);
-                              print(score);
+                              ref
+                                  .read(appRouterProvider)
+                                  .push('/examScore', extra: answers);
                             } else if (!allAnswered) {
                               ScaffoldMessenger.of(context)
                                   .showSnackBar(snackBar);

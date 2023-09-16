@@ -30,6 +30,7 @@ class _QuestionWidgetState extends ConsumerState<QuestionWidget>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
 
