@@ -60,6 +60,11 @@ class QuestionsNotifier extends StateNotifier<List<Question>> {
     checkAllAnswered();
   }
 
+  void deleteAll() {
+    List<Question> temp = [];
+    state = temp;
+  }
+
   void checkAllAnswered() {
     var flag = true;
 

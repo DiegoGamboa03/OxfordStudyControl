@@ -13,4 +13,15 @@ class UsersApi {
       throw Exception('Error');
     }
   }
+
+  static Future<User?> updateBlock(String userEmail, String password) async {
+    final dio = Dio();
+    final url = Constants.baseUrl;
+    try {
+      final response = await dio.get('$url/users/login/$userEmail/$password');
+      return User.fromJson(response.data);
+    } catch (e) {
+      throw Exception('Error');
+    }
+  }
 }

@@ -58,6 +58,9 @@ class ExamViewer extends ConsumerWidget {
                             if (allAnswered || buttonPresses > 0) {
                               List<Answer> answers = ref.read(answersProvider);
                               ref
+                                  .read(questionsStateNotifierProvider.notifier)
+                                  .deleteAll();
+                              ref
                                   .read(appRouterProvider)
                                   .push('/examScore', extra: answers);
                             } else if (!allAnswered) {
