@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:oxford_studycontrol/models/blocks.dart';
 
-import '../constants.dart';
+import '../../constants.dart';
 
 class BlocksApi {
   static Future<List<Block>> getBlocks() async {

@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../helpers/users_api.dart';
+import '../helpers/api/users_api.dart';
 import '../models/users.dart';
 
 final userProvider = StateProvider<User?>((ref) => null);

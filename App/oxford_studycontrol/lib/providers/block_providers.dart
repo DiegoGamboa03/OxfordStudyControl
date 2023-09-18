@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:oxford_studycontrol/helpers/blocks_api.dart';
+import 'package:oxford_studycontrol/helpers/api/blocks_api.dart';
 import 'package:oxford_studycontrol/models/blocks.dart';
 
 enum BlocksFilter { basico, intermedio, avanzado }

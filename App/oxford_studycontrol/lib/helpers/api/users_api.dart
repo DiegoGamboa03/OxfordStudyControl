@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:oxford_studycontrol/constants.dart';
-import '../models/users.dart';
+import '../../models/users.dart';
 
 class UsersApi {
   static Future<User?> login(String userEmail, String password) async {

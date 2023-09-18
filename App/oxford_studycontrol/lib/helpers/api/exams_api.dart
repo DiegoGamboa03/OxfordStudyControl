@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:oxford_studycontrol/constants.dart';
+import 'package:oxford_studycontrol/helpers/utils/date_utils.dart';
 import 'package:oxford_studycontrol/models/answers.dart';
 import 'package:oxford_studycontrol/models/exams.dart';
 import 'package:oxford_studycontrol/models/question.dart';
@@ -33,20 +34,8 @@ class ExamApi {
           data: jsonEncode(params));
       List<Question> questionList = [];
 
-      String dateTimeString = response.data['test_date'];
+      DateTime date = formatStringToDateTime(response.data['test_date']);
 
-      List<String> parts = dateTimeString.split(' ');
-      List<String> dateParts = parts[0].split('-');
-      List<String> timeParts = parts[1].split(':');
-
-      int year = int.parse(dateParts[0]);
-      int month = int.parse(dateParts[1]);
-      int day = int.parse(dateParts[2]);
-      int hour = int.parse(timeParts[0]);
-      int minute = int.parse(timeParts[1]);
-      int second = int.parse(timeParts[2]);
-
-      DateTime date = DateTime(year, month, day, hour, minute, second);
       response.data['questions'].forEach((question) {
         questionList.add(Question.fromJson(question));
       });

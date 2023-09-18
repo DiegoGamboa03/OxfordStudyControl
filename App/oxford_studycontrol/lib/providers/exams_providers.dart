@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:oxford_studycontrol/helpers/exams_api.dart';
+import 'package:oxford_studycontrol/helpers/api/exams_api.dart';
 import 'package:oxford_studycontrol/models/answers.dart';
 import 'package:oxford_studycontrol/models/exams.dart';
 import 'package:oxford_studycontrol/models/question.dart';

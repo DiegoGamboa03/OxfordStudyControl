@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:oxford_studycontrol/features/lessons_exams_list_view/screens/lessons_exams_list_viewer.dart';
+import 'package:oxford_studycontrol/features/online_classes/screens/online_classes_viewer.dart';
 
 class AppNavigationBar extends ConsumerStatefulWidget {
   const AppNavigationBar({super.key});
@@ -12,10 +13,10 @@ class AppNavigationBar extends ConsumerStatefulWidget {
 }
 
 class _AppNavigationBarState extends ConsumerState<AppNavigationBar> {
+  int currentPageIndex = 0;
+
   @override
   Widget build(BuildContext context) {
-    int currentPageIndex = 0;
-
     return Scaffold(
       bottomNavigationBar: NavigationBar(
         selectedIndex: currentPageIndex,
@@ -43,11 +44,7 @@ class _AppNavigationBarState extends ConsumerState<AppNavigationBar> {
       ),
       body: <Widget>[
         const LessonAndExamsListViewer(),
-        Container(
-          color: Colors.green,
-          alignment: Alignment.center,
-          child: const Text('Page 2'),
-        ),
+        const OnlineClassesViewer(),
         Container(
           color: Colors.blue,
           alignment: Alignment.center,

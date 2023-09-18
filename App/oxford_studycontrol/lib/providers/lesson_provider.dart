@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:oxford_studycontrol/helpers/lessons_api.dart';
+import 'package:oxford_studycontrol/helpers/api/lessons_api.dart';
 import 'package:oxford_studycontrol/models/lessons.dart';
 
 final lessonProvider = StateProvider<Lesson?>((ref) => null);
