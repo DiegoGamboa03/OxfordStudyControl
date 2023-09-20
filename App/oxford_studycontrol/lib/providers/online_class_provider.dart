@@ -1,11 +1,9 @@
-import 'dart:html';
-
-import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:oxford_studycontrol/helpers/api/online_classes_api.dart';
 import 'package:oxford_studycontrol/models/online_classes.dart';
 import 'package:oxford_studycontrol/providers/user_provider.dart';
 
+//Todas las clases online
 final onlineClassesStateNotifierProvider =
     StateNotifierProvider<OnlineClassesNotifier, List<OnlineClass>>((ref) {
   return OnlineClassesNotifier();
@@ -26,38 +24,76 @@ class OnlineClassesNotifier extends StateNotifier<List<OnlineClass>> {
   //Aqui va cualquier funcion que le quiera poner a la lista de blocks
 }
 
-final filteredOnlineClassProvider =
-    Provider<List<CalendarEventData<Event>?>>((ref) {
+final filteredOnlineClassProvider = Provider<List<OnlineClass>>((ref) {
   final user = ref.watch(userProvider);
   final onlineClasses = ref.watch(onlineClassesStateNotifierProvider);
-  List<CalendarEventData<Event>> events = [];
+  List<OnlineClass> list = [];
 
   for (var onlineClass in onlineClasses) {
-    if (onlineClass.requiredBlock == user!.currentBlock) {
-      /*CalendarEventData eventData = CalendarEventData(
-        date: ,
-        event: Event(title: "Joe's Birthday"),
-        title: "Project meeting",
-        description: "Today is project meeting.",
-        startTime: DateTime(_now.year, _now.month, _now.day, 18, 30),
-        endTime: DateTime(_now.year, _now.month, _now.day, 22),
-      );
-      events.add(eventData);*/
+    if (onlineClass.requiredBlock <= user!.currentBlock! &&
+        onlineClass.availablePositions < onlineClass.maxPositions) {
+      list.add(onlineClass);
     }
   }
-  return events;
+
+  return list;
 });
 
-final onlineClassesFetcher = FutureProvider((ref) async {
+//Clases online Reservadas por el estudiante
+final reservedOnlineClassesStateNotifierProvider =
+    StateNotifierProvider<ReservedOnlineClassesNotifier, List<String>>((ref) {
+  return ReservedOnlineClassesNotifier();
+});
+
+class ReservedOnlineClassesNotifier extends StateNotifier<List<String>> {
+  ReservedOnlineClassesNotifier() : super([]);
+
+  void addReservedOnlineClass(String onlineClass) {
+    state = [...state, onlineClass];
+  }
+
+  void addMultipleReservedOnlineClass(List<String> onlineClasses) {
+    for (var onlineClass in onlineClasses) {
+      addReservedOnlineClass(onlineClass);
+    }
+  }
+  //Aqui va cualquier funcion que le quiera poner a la lista de blocks
+}
+
+final onlineClassesFetcher =
+    FutureProvider.family<void, String>((ref, studentId) async {
   try {
     await OnlineClassApi.getOnlineClasses().then((onlineClasses) {
       ref
           .watch(onlineClassesStateNotifierProvider.notifier)
           .addMultipleOnlineClass(onlineClasses);
-      return onlineClasses;
+    });
+    await OnlineClassApi.getReservedOnlineClasses(studentId)
+        .then((onlineClasses) {
+      ref
+          .watch(reservedOnlineClassesStateNotifierProvider.notifier)
+          .addMultipleReservedOnlineClass(onlineClasses);
     });
   } catch (e) {
     rethrow;
   }
-  return null;
+});
+
+final makeReservationFetcher =
+    FutureProvider.family<int, OnlineClass>((ref, onlineClass) async {
+  try {
+    final user = ref.watch(userProvider);
+    await OnlineClassApi.makeReservation(onlineClass.name, user!.id)
+        .then((value) {
+      if (value == 1) {
+        ref
+            .watch(reservedOnlineClassesStateNotifierProvider.notifier)
+            .addReservedOnlineClass(onlineClass.name);
+      }
+      return value;
+    });
+  } catch (e) {
+    rethrow;
+  }
+  return -1;
 });

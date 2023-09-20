@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 DateTime formatStringToDateTime(String dateTimeString) {
   List<String> parts = dateTimeString.split(' ');
   List<String> dateParts = parts[0].split('-');
@@ -13,4 +15,11 @@ DateTime formatStringToDateTime(String dateTimeString) {
   DateTime date = DateTime(year, month, day, hour, minute, second);
 
   return date;
+}
+
+String getHoursMinuteFormat(DateTime dateTime) {
+  DateFormat format = DateFormat('hh:mm a');
+  String dateTimeString = format.format(dateTime);
+
+  return dateTimeString;
 }

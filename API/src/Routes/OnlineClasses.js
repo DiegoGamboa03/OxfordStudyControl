@@ -11,14 +11,16 @@ router.get('/getAvailableOnlineClasses', (req, res) => {
     AND DAYOFWEEK(NOW()) BETWEEN 2 AND 6`;
 */
     const sql = `
-    SELECT *, 
-    CONCAT(CURDATE(), ' ', OnlineClasses.start_time) AS start_date,
-    CONCAT(CURDATE(), ' ', OnlineClasses.end_time) AS end_date
-    FROM OnlineClasses
-    WHERE TIME(NOW()) <= start_time
-    AND available_positions > 0;`;
+    SELECT OC.*, 
+    CONCAT(CURDATE(), ' ', OC.start_time) AS start_date,
+    CONCAT(CURDATE(), ' ', OC.end_time) AS end_date,
+    TCM.url_meeting
+    FROM OnlineClasses OC
+    INNER JOIN TeachersClassroomMeetings TCM ON OC.teacher_id = TCM.teacher_id
+    WHERE TIME(NOW()) <= OC.start_time
+    AND OC.available_positions > 0`;
 
-    
+    console.log(sql);
 
     conn.query(sql, (error, results) => {
         
@@ -53,13 +55,42 @@ router.post('/makeReservation', (req, res) => {
                 return;
             }
             res.statusCode = 202; 
+            console.log(error.sqlMessage);
             res.send(error.sqlMessage);
             return;
         }
+        res.statusCode = 200;
         res.send(`Se ha reservado '${reservationJson.online_class_id}'`);
     });
 
 });
+
+router.get('/getReservations/:student_id', (req, res) => {
+
+    const { student_id } = req.params;
+
+    const sql = ` SELECT online_class_id FROM StudentsClassesReservation
+    WHERE student_id = '${student_id}'`;
+
+    console.log(sql);
+
+    conn.query(sql, (error, results) => {
+        
+        if (results.length > 0) {
+            res.json(results);
+        }
+        else if (error){
+            res.send(error.message);
+            return;
+        }
+        else{
+          res.statusCode = 202;
+          res.send('No se encontraron usuarios');
+          return;
+        }
+    });
+});
+
 
 
 module.exports = router;

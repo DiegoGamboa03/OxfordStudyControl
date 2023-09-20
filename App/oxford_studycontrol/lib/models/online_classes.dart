@@ -8,6 +8,7 @@ class OnlineClass {
   DateTime endTime;
   int maxPositions;
   int availablePositions;
+  String url;
 
   OnlineClass(
       {required this.name,
@@ -16,7 +17,8 @@ class OnlineClass {
       required this.startTime,
       required this.endTime,
       required this.maxPositions,
-      required this.availablePositions});
+      required this.availablePositions,
+      required this.url});
 
   factory OnlineClass.fromJson(Map<String, dynamic> json) {
     return OnlineClass(
@@ -26,6 +28,7 @@ class OnlineClass {
         startTime: formatStringToDateTime(json['start_date']),
         endTime: formatStringToDateTime(json['end_date']),
         maxPositions: json['max_positions'],
-        availablePositions: json['available_positions']);
+        availablePositions: json['available_positions'],
+        url: json['url_meeting']);
   }
 }
