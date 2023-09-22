@@ -21,7 +21,7 @@ class _OnlineClassCardState extends ConsumerState<OnlineClassCard> {
   late final Uri url;
 
   Future<void> _launchUrl() async {
-    if (!await launchUrl(url)) {
+    if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
       throw Exception('Could not launch $url');
     }
   }
@@ -77,20 +77,24 @@ class _OnlineClassCardState extends ConsumerState<OnlineClassCard> {
                         .read(makeReservationFetcher(onlineClass).future)
                         .then((value) {
                       context.loaderOverlay.hide();
+                      String text;
+                      if (value == 1) {
+                        text = 'Se ha reservado exitosamente';
+                      } else if (value == 0) {
+                        text = 'No hay puestos disponibles en esta clase';
+                      } else {
+                        text = 'Error al reservar, intente mas tarde';
+                      }
                       return showDialog<String>(
                           context: context,
                           builder: (BuildContext context) => AlertDialog(
-                                title: const Text('Se cargo'),
+                                title: Text(text),
                                 actions: <Widget>[
                                   TextButton(
                                     onPressed: () =>
-                                        Navigator.pop(context, 'Cancel'),
-                                    child: const Text('Cancel'),
-                                  ),
-                                  TextButton(
-                                    onPressed: () =>
                                         Navigator.pop(context, 'OK'),
-                                    child: const Text('OK'),
+                                    child: const Text('OK',
+                                        style: TextStyle(color: seedColor)),
                                   ),
                                 ],
                               ));

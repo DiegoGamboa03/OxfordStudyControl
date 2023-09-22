@@ -27,8 +27,11 @@ class LessonListTile extends ConsumerWidget {
               title: Text(lesson),
               enabled: isEnabled,
               onTap: () async {
-                await ref.read(lessonFetcher(lesson).future).then((value) {
-                  ref.read(appRouterProvider).go('/viewLesson');
+                await ref.read(lessonFetcher(lesson).future).then((data) {
+                  final lesson = ref.read(lessonProvider);
+                  ref
+                      .read(appRouterProvider)
+                      .push('/viewLesson', extra: lesson);
                 });
               },
             ),

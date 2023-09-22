@@ -6,7 +6,10 @@ const examUtils = require ('../Helpers/examsUtils');
 
 router.get('/:name', (req, res) => {
     const { name } = req.params;
-    const sql = `SELECT * FROM Lessons WHERE name = '${name}'`;
+    const sql = `SELECT L.*, R.url AS resource_url
+    FROM Lessons L
+    LEFT JOIN Resources R ON L.name = R.lesson
+    WHERE L.name = '${name}';`;
 
     conn.query(sql, (error, results) => {
         
@@ -115,4 +118,24 @@ router.get('/getAllLessons', async (req, res) => {
     
 });
 
+router.get('/getResources/:lesson_id', (req, res) => {
+    const { lesson_id } = req.params;
+    const sql = `Select * FROM Resources WHERE lesson = '${lesson_id}';`;
+
+    conn.query(sql, (error, results) => {
+        
+        if (results.length > 0) {
+            res.json(results);
+        }
+        else if (error){
+            res.send(error.message);
+            return;
+        }
+        else{
+          res.statusCode = 202;
+          res.send('No se encontraron examenes');
+          return;
+        }
+        });
+});
 module.exports = router;

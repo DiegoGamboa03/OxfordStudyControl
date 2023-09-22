@@ -1,80 +1,62 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:oxford_studycontrol/providers/lesson_provider.dart';
-import 'package:youtube_player_iframe/youtube_player_iframe.dart';
+import 'package:oxford_studycontrol/models/lessons.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
-class LessonViewer extends ConsumerWidget {
-  const LessonViewer({super.key});
+class LessonViewer extends ConsumerStatefulWidget {
+  final Lesson lesson;
+  const LessonViewer({super.key, required this.lesson});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final lesson = ref.watch(lessonProvider);
-    final videoID = YoutubePlayerController.convertUrlToId(lesson!.url);
-    final controller = YoutubePlayerController.fromVideoId(
-      videoId: videoID!,
-      autoPlay: true,
-      params: const YoutubePlayerParams(
-        enableCaption: false,
-        showFullscreenButton: false,
-        showControls: false,
-        enableJavaScript: false,
-      ),
-    );
+  ConsumerState<ConsumerStatefulWidget> createState() => _LessonViewerState();
+}
 
-    //double screenWidth = MediaQuery.of(context).size.width;
-    double screenHeight = MediaQuery.of(context).size.height;
+class _LessonViewerState extends ConsumerState<LessonViewer> {
+  late final Uri url;
 
+  Future<void> _launchUrl() async {
+    /*launchUrlString(widget.lesson.resourceUrl!, mode: LaunchMode.externalApplication);*/
+    if (!await launchUrlString(widget.lesson.resourceUrl!,
+        mode: LaunchMode.externalApplication)) {
+      throw Exception('Could not launch $url');
+    }
+  }
+
+  @override
+  void initState() {
+    if (widget.lesson.resourceUrl != null) {
+      Uri uri = Uri.parse(widget.lesson.resourceUrl!);
+
+      url = Uri(scheme: uri.scheme, host: uri.host, path: uri.path);
+      /*url = Uri(scheme: 'https', host: 'www.cylog.org', path: 'headers/');*/
+      //url = Uri.parse(widget.lesson.resourceUrl!);
+    }
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final lesson = widget.lesson;
     return Scaffold(
-      body: YoutubePlayerScaffold(
-        controller: controller,
-        aspectRatio: 16 / 9,
-        builder: (context, player) {
-          return Column(
-            children: [
-              Container(
-                  margin: EdgeInsets.only(
-                      top: screenHeight * 0.08, bottom: screenHeight * 0.02),
-                  child: player),
-              Text(lesson.name),
-            ],
-          );
-        },
-      ),
+      body: Column(children: [
+        Align(
+          alignment: Alignment.center,
+          child: Text(lesson.name),
+        ),
+        if (lesson.resourceUrl != null)
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Card(
+              child: ListTile(
+                title: const Text('Recursos'),
+                onTap: () {
+                  debugPrint('HOLAAAAAAAAAAA');
+                  _launchUrl();
+                },
+              ),
+            ),
+          )
+      ]),
     );
   }
 }
-
-
-/*final lesson = ref.watch(lessonProvider);
-    final videoID = YoutubePlayerController.convertUrlToId(lesson!.url);
-    final controller = YoutubePlayerController.fromVideoId(
-      videoId: videoID!,
-      autoPlay: true,
-      params: const YoutubePlayerParams(
-        enableCaption: false,
-        showFullscreenButton: false,
-        showControls: false,
-        enableJavaScript: false,
-      ),
-    );
-
-    double screenWidth = MediaQuery.of(context).size.width;
-    double screenHeight = MediaQuery.of(context).size.height;
-
-    return Scaffold(
-      body: YoutubePlayerScaffold(
-        controller: controller,
-        aspectRatio: 16 / 9,
-        builder: (context, player) {
-          return Column(
-            children: [
-              Container(
-                  margin: EdgeInsets.only(
-                      top: screenHeight * 0.08, bottom: screenHeight * 0.02),
-                  child: player),
-              Text(lesson.name),
-            ],
-          );
-        },
-      ),
-    );*/

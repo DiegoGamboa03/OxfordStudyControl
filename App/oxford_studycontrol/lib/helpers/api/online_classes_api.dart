@@ -52,11 +52,11 @@ class OnlineClassApi {
           data: jsonEncode(params));
 
       if (response.statusCode == 200) {
-        return 1;
+        return 1; // Se logro hacer la reserva
       } else if (response.statusCode == 403) {
-        return 0;
+        return 0; //Sitio full
       } else {
-        return -1;
+        return -1; //Error
       }
     } catch (e) {
       throw Exception('Error');

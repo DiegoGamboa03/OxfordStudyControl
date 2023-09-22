@@ -8,6 +8,7 @@ import 'package:oxford_studycontrol/features/login/screens/login.dart';
 import 'package:oxford_studycontrol/models/answers.dart';
 
 import '../../features/lessons_viewer/screens/lesson_viewer.dart';
+import '../../models/lessons.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(routes: [
@@ -21,7 +22,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
     ),
     GoRoute(
       path: '/viewLesson',
-      builder: (context, state) => const LessonViewer(),
+      builder: (context, state) {
+        Lesson lesson = state.extra as Lesson;
+        return LessonViewer(lesson: lesson);
+      },
     ),
     GoRoute(
       path: '/examPreview',

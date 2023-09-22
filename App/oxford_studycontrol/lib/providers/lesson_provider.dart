@@ -5,7 +5,7 @@ import 'package:oxford_studycontrol/models/lessons.dart';
 final lessonProvider = StateProvider<Lesson?>((ref) => null);
 
 final lessonFetcher =
-    FutureProvider.family<Lesson?, String>((ref, lessonName) async {
+    FutureProvider.autoDispose.family<Lesson?, String>((ref, lessonName) async {
   try {
     await LessonApi.getLesson(lessonName).then((data) {
       ref.watch(lessonProvider.notifier).update((state) => data);

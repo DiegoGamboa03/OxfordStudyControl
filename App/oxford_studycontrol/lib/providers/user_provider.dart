@@ -4,7 +4,7 @@ import '../models/users.dart';
 
 final userProvider = StateProvider<User?>((ref) => null);
 
-final userUpdateFetcher = FutureProvider<User?>((ref) async {
+final userUpdateFetcher = FutureProvider.autoDispose<User?>((ref) async {
   final userEmail = ref.watch(userProvider)!.email;
   final password = ref.watch(userProvider)!.password;
 
@@ -21,7 +21,8 @@ final userUpdateFetcher = FutureProvider<User?>((ref) async {
   return null;
 });
 
-final userFetcher = FutureProvider.family<User?, String>((ref, userData) async {
+final userFetcher =
+    FutureProvider.autoDispose.family<User?, String>((ref, userData) async {
   final userEmail = userData.split(' ')[0];
   final password = userData.split(' ')[1];
 
