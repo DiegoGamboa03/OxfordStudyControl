@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:oxford_studycontrol/features/lessons_exams_list_view/screens/lessons_exams_list_viewer.dart';
 import 'package:oxford_studycontrol/features/online_classes/screens/online_classes_viewer.dart';
+import 'package:oxford_studycontrol/features/profile/screens/profile_screen.dart';
 
 class AppNavigationBar extends ConsumerStatefulWidget {
   const AppNavigationBar({super.key});
@@ -45,11 +46,7 @@ class _AppNavigationBarState extends ConsumerState<AppNavigationBar> {
       body: <Widget>[
         const LessonAndExamsListViewer(),
         const OnlineClassesViewer(),
-        Container(
-          color: Colors.blue,
-          alignment: Alignment.center,
-          child: const Text('Page 3'),
-        ),
+        const ProfileScreen(),
       ][currentPageIndex],
     );
   }
