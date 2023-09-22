@@ -5,6 +5,7 @@ import 'package:oxford_studycontrol/features/exams_viewer/screens/exam_score_vie
 import 'package:oxford_studycontrol/features/exams_viewer/screens/exam_viewer.dart';
 import 'package:oxford_studycontrol/features/home_page/Screens/homepage.dart';
 import 'package:oxford_studycontrol/features/login/screens/login.dart';
+import 'package:oxford_studycontrol/features/profile/screens/grades_viewer.dart';
 import 'package:oxford_studycontrol/features/profile/screens/profile_screen.dart';
 import 'package:oxford_studycontrol/models/answers.dart';
 
@@ -46,6 +47,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
     GoRoute(
       path: '/profile',
       builder: (context, state) => const ProfileScreen(),
+    ),
+    GoRoute(
+      path: '/gradesViewer',
+      builder: (context, state) => const GradesViewer(),
     ),
   ]);
 });

@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:oxford_studycontrol/config/router/app_router.dart';
+import 'package:oxford_studycontrol/config/theme/app_theme.dart';
+import 'package:oxford_studycontrol/features/profile/widgets/title_subtitle_text.dart';
+import 'package:oxford_studycontrol/providers/user_provider.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
@@ -9,35 +13,58 @@ class ProfileScreen extends ConsumerStatefulWidget {
 }
 
 class _ProfileScreenState extends ConsumerState<ProfileScreen> {
-  late bool update;
-  late TextEditingController _controller;
   @override
   void initState() {
-    update = false;
-    _controller = TextEditingController();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    final user = ref.watch(userProvider);
+    user!;
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+    var margin = EdgeInsets.symmetric(
+        vertical: screenHeight * 0.01, horizontal: screenWidth * 0.03);
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        !update
-            ? const Text('Diego')
-            : TextFormField(
-                controller: _controller,
-                decoration: const InputDecoration(
-                  hintText: "Email",
-                )),
-        IconButton(
-          iconSize: 72,
-          icon: const Icon(Icons.favorite),
-          onPressed: () {
-            setState(() {
-              update = !update;
-            });
-          },
+        Container(
+          margin: margin,
+          child: Center(
+            child: Text(user.getCompleteName,
+                style: Theme.of(context)
+                    .textTheme
+                    .titleLarge!
+                    .copyWith(fontWeight: FontWeight.bold, color: seedColor)),
+          ),
         ),
+        Container(
+          margin: margin,
+          child: Center(
+            child: Text(user.id,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyMedium!
+                    .copyWith(color: Colors.grey, fontSize: 18)),
+          ),
+        ),
+        TitleSubtitleText(title: 'Direccion:', subtitle: user.address),
+        TitleSubtitleText(title: 'Email:', subtitle: user.email),
+        TitleSubtitleText(
+            title: 'Numero telefonico:', subtitle: user.phoneNumber),
+        TextButton(
+            onPressed: () {
+              debugPrint('Hola');
+              ref.read(appRouterProvider).push('/gradesViewer');
+            },
+            child: const Text('Presiona para revisar notas')),
+        TextButton(
+            onPressed: () {
+              debugPrint('Hola');
+            },
+            child: const Text('Presina para editar tu informacion'))
       ],
     );
   }

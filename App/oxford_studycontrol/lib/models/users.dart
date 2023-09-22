@@ -38,4 +38,13 @@ class User {
         role: json['role'],
         currentBlock: json['current_block']);
   }
+
+  get getCompleteName {
+    String completeName = '';
+    completeName += firstName;
+    if (middleName != null) completeName += ' ${middleName!}';
+    completeName += ' $surname';
+    if (secondSurname != null) completeName += ' ${secondSurname!}';
+    return completeName;
+  }
 }

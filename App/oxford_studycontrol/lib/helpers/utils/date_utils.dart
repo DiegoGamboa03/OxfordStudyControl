@@ -23,3 +23,10 @@ String getHoursMinuteFormat(DateTime dateTime) {
 
   return dateTimeString;
 }
+
+String getDateFormat(DateTime dateTime) {
+  DateFormat format = DateFormat('yyyy-MM-dd, hh:mm a');
+  String dateTimeString = format.format(dateTime);
+
+  return dateTimeString;
+}
