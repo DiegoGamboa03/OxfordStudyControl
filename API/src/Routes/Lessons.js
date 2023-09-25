@@ -3,6 +3,7 @@ const router = new Router();
 const conn = require('../Config/DatabaseConfig');
 const lessonUtils = require ('../Helpers/lessosnsUtils');
 const examUtils = require ('../Helpers/examsUtils');
+const { getSignedUrl } = require('../Helpers/googleCloudUtils.js');
 
 router.get('/:name', (req, res) => {
     const { name } = req.params;
@@ -11,9 +12,11 @@ router.get('/:name', (req, res) => {
     LEFT JOIN Resources R ON L.name = R.lesson
     WHERE L.name = '${name}';`;
 
-    conn.query(sql, (error, results) => {
+    conn.query(sql, async (error, results) => {
         
         if (results.length > 0) {
+            let url = await getSignedUrl(results[0].file_name);
+            results[0].url = url;
             res.json(results[0]);
         }
         else if (error){

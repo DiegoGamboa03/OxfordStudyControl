@@ -42,7 +42,7 @@ class LessonListTile extends ConsumerWidget {
               textColor: seedColor,
               leading: const Icon(LineIcons.pen),
               title: Text(block.requiredExam!),
-              enabled: isEnabled,
+              enabled: block.id == user.currentBlock,
               onTap: () async {
                 await ref
                     .read(examFetcher(block.requiredExam!).future)
