@@ -29,9 +29,11 @@ class OnlineClassApi {
       final response =
           await dio.get('$url/onlineClasses/getReservations/$studentId');
       List<String> onlineClasses = [];
-      response.data.forEach((onlineClass) {
-        onlineClasses.add(onlineClass['online_class_id']);
-      });
+      if (response.statusCode == 200) {
+        response.data.forEach((onlineClass) {
+          onlineClasses.add(onlineClass['online_class_id']);
+        });
+      }
       return onlineClasses;
     } catch (e) {
       throw Exception('Error');

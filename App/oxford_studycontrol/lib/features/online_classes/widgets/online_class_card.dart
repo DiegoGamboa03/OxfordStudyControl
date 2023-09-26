@@ -39,6 +39,10 @@ class _OnlineClassCardState extends ConsumerState<OnlineClassCard> {
     String startTimeString = getHoursMinuteFormat(onlineClass.startTime);
     String endTimeString = getHoursMinuteFormat(onlineClass.endTime);
 
+    const snackBar = SnackBar(
+      content: Text('Se ha reservado exitosamente'),
+    );
+
     return Card(
         child: isLoading
             ? const Center(child: Expanded(child: CircularProgressIndicator()))
@@ -79,25 +83,25 @@ class _OnlineClassCardState extends ConsumerState<OnlineClassCard> {
                       context.loaderOverlay.hide();
                       String text;
                       if (value == 1) {
-                        text = 'Se ha reservado exitosamente';
-                      } else if (value == 0) {
-                        text = 'No hay puestos disponibles en esta clase';
+                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
                       } else {
-                        text = 'Error al reservar, intente mas tarde';
+                        text = (value == 0
+                            ? 'No hay puestos disponibles en esta clase'
+                            : 'Error al reservar, intente mas tarde');
+                        return showDialog<String>(
+                            context: context,
+                            builder: (BuildContext context) => AlertDialog(
+                                  title: Text(text),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.pop(context, 'OK'),
+                                      child: const Text('OK',
+                                          style: TextStyle(color: seedColor)),
+                                    ),
+                                  ],
+                                ));
                       }
-                      return showDialog<String>(
-                          context: context,
-                          builder: (BuildContext context) => AlertDialog(
-                                title: Text(text),
-                                actions: <Widget>[
-                                  TextButton(
-                                    onPressed: () =>
-                                        Navigator.pop(context, 'OK'),
-                                    child: const Text('OK',
-                                        style: TextStyle(color: seedColor)),
-                                  ),
-                                ],
-                              ));
                     });
                   }
                 }));

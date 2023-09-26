@@ -13,18 +13,79 @@ class OnlineClassesViewer extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(userProvider);
     final onlineClassesAsync = ref.watch(onlineClassesFetcher(user!.id));
+    final currentFilter = ref.watch(onlineClassFilterProvider);
     final onlineClasses = ref.watch(filteredOnlineClassProvider);
 
-    /*double screenWidth = MediaQuery.of(context).size.width;
+    double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
-    var margin = EdgeInsets.symmetric(
-        vertical: screenHeight * 0.05, horizontal: screenWidth * 0.05);*/
-
+    /*var margin = EdgeInsets.symmetric(
+        vertical: screenHeight * 0.05, horizontal: screenWidth * 0.05);
+*/
     return Center(
       child: onlineClassesAsync.when(
           data: (_) {
             return LoaderOverlay(
-              child: CustomScrollView(
+                child: Column(
+              children: [
+                Container(
+                  margin: EdgeInsets.only(
+                      top: screenHeight * 0.05, bottom: screenHeight * 0.02),
+                  child: SegmentedButton(
+                    style: ButtonStyle(
+                      shadowColor:
+                          MaterialStateProperty.all<Color>(Colors.white),
+                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                        (Set<MaterialState> states) {
+                          if (states.contains(MaterialState.selected)) {
+                            return seedColor;
+                          }
+                          return Colors.white;
+                        },
+                      ),
+                      foregroundColor: MaterialStateProperty.resolveWith<Color>(
+                        (Set<MaterialState> states) {
+                          if (states.contains(MaterialState.selected)) {
+                            return Colors.white;
+                          }
+                          return Colors.black;
+                        },
+                      ),
+                    ),
+                    segments: const [
+                      ButtonSegment(
+                          value: OnlineClassFilter.all,
+                          icon: Text('Clases disponibles')),
+                      ButtonSegment(
+                          value: OnlineClassFilter.reserved,
+                          icon: Text('Clases reservadas')),
+                    ],
+                    selected: <OnlineClassFilter>{currentFilter},
+                    onSelectionChanged: (value) {
+                      ref.read(onlineClassFilterProvider.notifier).state =
+                          value.first;
+                    },
+                  ),
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: onlineClasses.length,
+                    itemBuilder: (context, index) {
+                      final onlineClass = onlineClasses[index];
+                      return OnlineClassCard(onlineClass: onlineClass);
+                    },
+                  ),
+                )
+              ],
+            ));
+          },
+          error: (_, __) => const Text('No'),
+          loading: () => const CircularProgressIndicator()),
+    );
+  }
+}
+
+
+/*CustomScrollView(
                 slivers: <Widget>[
                   SliverAppBar(
                     title: Expanded(
@@ -44,11 +105,4 @@ class OnlineClassesViewer extends ConsumerWidget {
                     },
                   )
                 ],
-              ),
-            );
-          },
-          error: (_, __) => const Text('No se pudo cargar el nombre'),
-          loading: () => const CircularProgressIndicator()),
-    );
-  }
-}
+              ),*/

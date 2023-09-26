@@ -3,6 +3,12 @@ import 'package:oxford_studycontrol/helpers/api/online_classes_api.dart';
 import 'package:oxford_studycontrol/models/online_classes.dart';
 import 'package:oxford_studycontrol/providers/user_provider.dart';
 
+enum OnlineClassFilter { all, reserved }
+
+final onlineClassFilterProvider = StateProvider<OnlineClassFilter>((ref) {
+  return OnlineClassFilter.all;
+});
+
 //Todas las clases online
 final onlineClassesStateNotifierProvider =
     StateNotifierProvider<OnlineClassesNotifier, List<OnlineClass>>((ref) {
@@ -27,16 +33,25 @@ class OnlineClassesNotifier extends StateNotifier<List<OnlineClass>> {
 final filteredOnlineClassProvider = Provider<List<OnlineClass>>((ref) {
   final user = ref.watch(userProvider);
   final onlineClasses = ref.watch(onlineClassesStateNotifierProvider);
-  List<OnlineClass> list = [];
+  final reservedOnlineClasses =
+      ref.watch(reservedOnlineClassesStateNotifierProvider);
+  final selectedFilter = ref.watch(onlineClassFilterProvider);
 
-  for (var onlineClass in onlineClasses) {
-    if (onlineClass.requiredBlock <= user!.currentBlock! &&
-        onlineClass.availablePositions < onlineClass.maxPositions) {
-      list.add(onlineClass);
-    }
+  switch (selectedFilter) {
+    case OnlineClassFilter.all:
+      return onlineClasses.where((onlineClass) {
+        bool isAvailable = onlineClass.requiredBlock <= user!.currentBlock! &&
+            onlineClass.availablePositions < onlineClass.maxPositions;
+
+        return isAvailable && !reservedOnlineClasses.contains(onlineClass.name);
+      }).toList();
+    case OnlineClassFilter.reserved:
+      return onlineClasses.where((onlineClass) {
+        bool isAvailable = onlineClass.requiredBlock <= user!.currentBlock! &&
+            onlineClass.availablePositions < onlineClass.maxPositions;
+        return isAvailable && reservedOnlineClasses.contains(onlineClass.name);
+      }).toList();
   }
-
-  return list;
 });
 
 //Clases online Reservadas por el estudiante
@@ -79,21 +94,20 @@ final onlineClassesFetcher =
   }
 });
 
-final makeReservationFetcher =
-    FutureProvider.family<int, OnlineClass>((ref, onlineClass) async {
+final makeReservationFetcher = FutureProvider.autoDispose
+    .family<int, OnlineClass>((ref, onlineClass) async {
   try {
     final user = ref.watch(userProvider);
-    await OnlineClassApi.makeReservation(onlineClass.name, user!.id)
-        .then((value) {
-      if (value == 1) {
-        ref
-            .watch(reservedOnlineClassesStateNotifierProvider.notifier)
-            .addReservedOnlineClass(onlineClass.name);
-      }
-      return value;
-    });
+    final value =
+        await OnlineClassApi.makeReservation(onlineClass.name, user!.id);
+
+    if (value == 1) {
+      ref
+          .watch(reservedOnlineClassesStateNotifierProvider.notifier)
+          .addReservedOnlineClass(onlineClass.name);
+    }
+    return value;
   } catch (e) {
     rethrow;
   }
-  return -1;
 });
