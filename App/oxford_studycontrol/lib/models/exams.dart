@@ -13,7 +13,7 @@ class Exam {
   factory Exam.fromJson(Map<String, dynamic> json) {
     return Exam(
         name: json['name'],
-        passingGrade: json['passing_grade'],
+        passingGrade: json['passing_grade'].toDouble(),
         numQuestions: json['num_questions'],
         type: json['type']);
   }

@@ -81,7 +81,7 @@ class LoginState extends ConsumerState<Login> {
             onPressed: () async {
               if (_formKey.currentState!.validate()) {
                 String userData =
-                    '${_emailController.text} ${_passwordController.text}';
+                    '${_emailController.text.trim()} ${_passwordController.text.trim()}';
                 try {
                   await ref.read(userFetcher(userData).future).then((value) {
                     ref.read(appRouterProvider).go('/homepage');

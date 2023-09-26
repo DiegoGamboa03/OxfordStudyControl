@@ -74,8 +74,9 @@ router.post('/add', (req, res) => {
 router.get('/login/:email/:password', (req, res) => {
     const { email, password } = req.params;
     const sql = `SELECT * FROM Users WHERE email = '${email}' AND PASSWORD = '${password}'`;
-
+    console.log(sql);
     conn.query(sql, async (error, results) => {
+        console.log(sql);
         
         if (results.length > 0) {
             if(results[0].role == 'Estudiante'){

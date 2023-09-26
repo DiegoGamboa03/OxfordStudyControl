@@ -80,7 +80,7 @@ function getGeneratedTestsQuestions(exam_id, student_id, date) {
 
 function getQuestionOptions(question_id) {
     return new Promise((resolve, reject) => {
-        const sql = `SELECT OPTION FROM OptionsMultipleChoice WHERE question_id = '${question_id}'`;
+        const sql = `SELECT OPTION FROM OptionsMultipleChoice WHERE question_id = "${question_id}"`;
 
         conn.query(sql, (error, results) => {
             if (error) {
@@ -107,13 +107,14 @@ function getQuestionOptions(question_id) {
  */
 function checkAnswer(exam_id, answer) {
     return new Promise((resolve, reject) => {
-        const sql = `SELECT checkAnswer('${exam_id}', '${answer}') AS is_correct`;
+        const sql = `SELECT checkAnswer("${exam_id}", "${answer}") AS is_correct`;
         conn.query(sql, (error, results) => {
             if (error) {
                 reject(error);
             } else {
                 if (results.length > 0) {
                     let is_correct = JSON.parse(JSON.stringify(results))[0].is_correct;
+                    console.log(sql +' la nota de esta pregunta fue ' + is_correct );
                     resolve(is_correct);
                 } else {
                     resolve(-1);
@@ -130,7 +131,7 @@ function checkAnswer(exam_id, answer) {
  */
 function checkMaxScore(question_id) {
     return new Promise((resolve, reject) => {
-        const sql = `SELECT max_score FROM Questions WHERE question = '${question_id}'`;
+        const sql = `SELECT max_score FROM Questions WHERE question = "${question_id}"`;
         
         conn.query(sql, (error, results) => {
             if (error) {
@@ -180,7 +181,7 @@ function insertGrades(exam_id, student_id, date, score) {
 
 function getQuestionType(question_id) {
     return new Promise((resolve, reject) => {
-        const sql = `SELECT question_type FROM Questions WHERE question = '${question_id}'`;
+        const sql = `SELECT question_type FROM Questions WHERE question = "${question_id}"`;
 
         conn.query(sql, (error, results) => {
             if (error) {

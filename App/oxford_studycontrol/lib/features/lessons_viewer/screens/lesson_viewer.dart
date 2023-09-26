@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:oxford_studycontrol/config/router/app_router.dart';
 import 'package:oxford_studycontrol/config/theme/app_theme.dart';
 import 'package:oxford_studycontrol/models/lessons.dart';
-import 'package:oxford_studycontrol/providers/block_providers.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:video_player/video_player.dart';
 
@@ -22,7 +21,6 @@ class _LessonViewerState extends ConsumerState<LessonViewer> {
   late ChewieController chewieController;
 
   Future<void> _launchUrl() async {
-    /*launchUrlString(widget.lesson.resourceUrl!, mode: LaunchMode.externalApplication);*/
     if (!await launchUrlString(widget.lesson.resourceUrl!,
         mode: LaunchMode.externalApplication)) {
       throw Exception('Could not launch $url');
@@ -60,8 +58,20 @@ class _LessonViewerState extends ConsumerState<LessonViewer> {
   }
 
   @override
+  void dispose() {
+    _videoPlayerController.dispose();
+    chewieController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final lesson = widget.lesson;
+
+    const snackBar = SnackBar(
+      content: Text(
+          '¡Lo sentimos!, esta leccion no cuenta con recursos actualmente'),
+    );
 
     return Scaffold(
       appBar: AppBar(
@@ -125,7 +135,9 @@ class _LessonViewerState extends ConsumerState<LessonViewer> {
             onTap: () {
               if (lesson.resourceUrl != null) {
                 _launchUrl();
-              } else {}
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+              }
             },
           ),
         )

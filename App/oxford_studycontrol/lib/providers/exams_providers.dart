@@ -91,8 +91,8 @@ final examFetcher = FutureProvider.family<Exam?, String>((ref, examName) async {
   return null;
 });
 
-final questionFetcher =
-    FutureProvider.family<List<Question>?, String>((ref, examName) async {
+final questionFetcher = FutureProvider.autoDispose
+    .family<List<Question>?, String>((ref, examName) async {
   try {
     final userId = ref.read(userProvider)!.id;
     await ExamApi.generate(examName, userId).then((data) {

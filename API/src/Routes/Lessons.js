@@ -16,6 +16,7 @@ router.get('/:name', (req, res) => {
         
         if (results.length > 0) {
             let url = await getSignedUrl(results[0].file_name);
+            console.log(url);
             results[0].url = url;
             res.json(results[0]);
         }

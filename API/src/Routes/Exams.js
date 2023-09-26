@@ -207,17 +207,19 @@ router.post('/evaluateExam', async (req, res) => {
                 
                 final_score += (is_correct == -1 ? 0 : is_correct ? max_score : 0)
                 //Poner un if que se asegure que si is_correct es igual a -1, haga la logica de la tabla de examenes por corregir
-                let sql = 'UPDATE GeneratedTestQuestions SET '  +
+
+                let sql = escapeContractions('UPDATE GeneratedTestQuestions SET '  +
                 `answer_text='${element.answer}', ` +
                 `score= ${is_correct == -1 ? null : is_correct ? max_score : 0} ` +
                 `WHERE exam_id='${req.body.exam_id}' ` +
                 `AND student_id='${req.body.student_id}' `+
-                `AND question_id='${element.question_id}' `+
-                `AND generated_test_date='${req.body.generated_test_date}' `;
-    
+                `AND question_id="${element.question_id}" `+
+                `AND generated_test_date='${req.body.generated_test_date}'`);
+                
                 await new Promise((resolve, reject) => {
                     conn.query(sql, error => {
                         if (error) {
+                            console.log(sql);
                             console.log(error.sqlMessage)
                             reject(error);
                         } else {
@@ -259,5 +261,13 @@ router.get('/checkBreak/:student_id', async (req,res) => {
     });
 });
 
-
+function escapeContractions(inputString) {
+    // Utiliza una expresión regular para buscar contracciones con comillas simples
+    const regex = /(\w+'\w+)/g;
+    
+    // Reemplaza las comillas simples en las contracciones con comillas escapadas
+    inputString = inputString.replace(regex, (match) => match.replace(/'/g, "\\'"));
+    
+    return inputString;
+  }
 module.exports = router;

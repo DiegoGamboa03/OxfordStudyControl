@@ -6,18 +6,37 @@ import 'package:oxford_studycontrol/features/exams_viewer/widgets/question_widge
 import 'package:oxford_studycontrol/models/answers.dart';
 import 'package:oxford_studycontrol/providers/exams_providers.dart';
 
-class ExamViewer extends ConsumerWidget {
+class ExamViewer extends ConsumerStatefulWidget {
   const ExamViewer({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ConsumerStatefulWidget> createState() => _ExamViewerState();
+}
+
+class _ExamViewerState extends ConsumerState<ExamViewer>
+    with WidgetsBindingObserver {
+  int buttonPresses = 0;
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addObserver(this);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final exam = ref.watch(examProvider);
     final questionAsync = ref.watch(questionFetcher(exam!.name));
 
     const snackBar = SnackBar(
       content: Text(' ¡Cuidado! no todas tus preguntas han sido respondidas'),
     );
-    int buttonPresses = 0;
 
     return Scaffold(
       body: Center(
