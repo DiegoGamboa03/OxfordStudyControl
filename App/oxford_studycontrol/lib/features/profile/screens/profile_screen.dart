@@ -63,6 +63,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         TextButton(
             onPressed: () {
               debugPrint('Hola');
+              ref.read(appRouterProvider).push('/editProfile', extra: user);
             },
             child: const Text('Presina para editar tu informacion'))
       ],

@@ -71,6 +71,35 @@ router.post('/add', (req, res) => {
 
 });
 
+router.put('/update/:email/:password', (req, res) => {
+    
+    const { email, password } = req.params;
+    const { newPassword,phone_number,address } = req.body;
+
+    if(newPassword === undefined || phone_number === undefined || address === undefined){
+        res.statusCode = 202; 
+        res.send('Alguno de los campos es nulo');
+        return;
+    }
+    const sql = 'UPDATE Users SET ' +
+       `Users.password = '${newPassword}', ` +
+      `address = '${address}', ` +
+      `phone_number = '${phone_number}' ` +
+      `WHERE email = '${email}' `+
+      `AND Users.password = '${password}'`
+
+    conn.query(sql, error => {
+        if (error){
+            res.statusCode = 202; 
+            res.send(error.sqlMessage);
+            return;
+        }
+        console.log(sql);
+        res.send(`Se ha actualizado al usuario'`);
+    });
+
+});
+
 router.get('/login/:email/:password', (req, res) => {
     const { email, password } = req.params;
     const sql = `SELECT * FROM Users WHERE email = '${email}' AND PASSWORD = '${password}'`;

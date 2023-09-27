@@ -16,7 +16,7 @@ class OnlineClassesViewer extends ConsumerWidget {
     final currentFilter = ref.watch(onlineClassFilterProvider);
     final onlineClasses = ref.watch(filteredOnlineClassProvider);
 
-    double screenWidth = MediaQuery.of(context).size.width;
+    //double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     /*var margin = EdgeInsets.symmetric(
         vertical: screenHeight * 0.05, horizontal: screenWidth * 0.05);
