@@ -55,9 +55,14 @@ class _EditProfileState extends ConsumerState<EditProfile> {
             ref.read(appRouterProvider).pop();
           },
         ),
-        title: const Text('Edita tu informacion'),
+        title: Text(
+          'Edita tu informacion',
+          style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                color: seedColor,
+              ),
+        ),
       ),
-      body: Column(children: [
+      body: Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
         Form(
           key: _formKey,
           child: Column(
@@ -67,10 +72,10 @@ class _EditProfileState extends ConsumerState<EditProfile> {
                 child: TextFormField(
                   controller: _phoneNumberController,
                   decoration: const InputDecoration(
-                    labelText: 'Numero telefonico',
-                    labelStyle: TextStyle(color: seedColor),
-                    hintText: "Numero telefonico",
-                  ),
+                      labelText: 'Numero telefonico',
+                      labelStyle: TextStyle(color: seedColor),
+                      hintText: "Numero telefonico",
+                      hintStyle: TextStyle(color: seedColor)),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'El campo de numero telefonico no puede estar vacío';
@@ -84,10 +89,10 @@ class _EditProfileState extends ConsumerState<EditProfile> {
                 child: TextFormField(
                   controller: _passwordController,
                   decoration: const InputDecoration(
-                    labelText: 'Contraseña',
-                    labelStyle: TextStyle(color: seedColor),
-                    hintText: "Contraseña",
-                  ),
+                      labelText: 'Contraseña',
+                      labelStyle: TextStyle(color: seedColor),
+                      hintText: "Contraseña",
+                      hintStyle: TextStyle(color: seedColor)),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'El campo de la contraseña no puede estar vacío';
@@ -103,6 +108,7 @@ class _EditProfileState extends ConsumerState<EditProfile> {
                   decoration: const InputDecoration(
                       labelText: 'Dirección',
                       hintText: "Dirección",
+                      hintStyle: TextStyle(color: seedColor),
                       labelStyle: TextStyle(color: seedColor)),
                   validator: (value) {
                     if (value == null || value.isEmpty) {

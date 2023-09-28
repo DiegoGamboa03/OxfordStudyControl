@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:oxford_studycontrol/config/theme/app_theme.dart';
 import '../../../config/router/app_router.dart';
 import '../../../providers/user_provider.dart';
 
@@ -45,8 +46,10 @@ class LoginState extends ConsumerState<Login> {
               child: TextFormField(
                 controller: _emailController,
                 decoration: const InputDecoration(
-                  hintText: "Email",
-                ),
+                    labelText: 'Email',
+                    labelStyle: TextStyle(color: seedColor),
+                    hintText: "Email",
+                    hintStyle: TextStyle(color: seedColor)),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'El campo de correo electrónico no puede estar vacío';
@@ -61,8 +64,10 @@ class LoginState extends ConsumerState<Login> {
                 controller: _passwordController,
                 obscureText: true,
                 decoration: const InputDecoration(
-                  hintText: "Contraseña",
-                ),
+                    labelText: 'Contraseña',
+                    labelStyle: TextStyle(color: seedColor),
+                    hintText: "Contraseña",
+                    hintStyle: TextStyle(color: seedColor)),
                 keyboardType: TextInputType.visiblePassword,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
