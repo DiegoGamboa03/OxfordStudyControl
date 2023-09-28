@@ -4,7 +4,7 @@ import '../models/users.dart';
 
 final userProvider = StateProvider<User?>((ref) => null);
 
-final userUpdateFetcher = FutureProvider.autoDispose<User?>((ref) async {
+final userUpdateBlockFetcher = FutureProvider.autoDispose<User?>((ref) async {
   final userEmail = ref.watch(userProvider)!.email;
   final password = ref.watch(userProvider)!.password;
 
@@ -19,6 +19,17 @@ final userUpdateFetcher = FutureProvider.autoDispose<User?>((ref) async {
     rethrow;
   }
   return null;
+});
+
+final userUpdateFetcher = FutureProvider.autoDispose
+    .family<User?, User>((ref, updatedUserData) async {
+  try {
+    final data = await UsersApi.updateUserData(updatedUserData);
+    ref.refresh(userProvider.notifier).update((state) => data);
+    return data;
+  } catch (e) {
+    rethrow;
+  }
 });
 
 final userFetcher =

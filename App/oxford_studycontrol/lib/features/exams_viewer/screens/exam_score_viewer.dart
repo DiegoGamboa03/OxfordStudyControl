@@ -94,7 +94,7 @@ class _ExamScoreViewerState extends ConsumerState<ExamScoreViewer> {
                     alignment: Alignment.bottomCenter,
                     child: ElevatedButton(
                         onPressed: () async {
-                          ref.read(userUpdateFetcher.future).then((value) {
+                          ref.read(userUpdateBlockFetcher.future).then((value) {
                             ref.read(appRouterProvider).go('/homepage');
                           });
                         },

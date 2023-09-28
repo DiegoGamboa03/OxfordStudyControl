@@ -47,4 +47,32 @@ class User {
     if (secondSurname != null) completeName += ' ${secondSurname!}';
     return completeName;
   }
+
+  User copyWith({
+    String? id,
+    String? email,
+    String? password,
+    String? phoneNumber,
+    String? address,
+    String? firstName,
+    String? middleName,
+    String? surname,
+    String? secondSurname,
+    String? role,
+    int? currentBlock,
+  }) {
+    return User(
+      id: id ?? this.id,
+      email: email ?? this.email,
+      password: password ?? this.password,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
+      address: address ?? this.address,
+      firstName: firstName ?? this.firstName,
+      middleName: middleName ?? this.middleName,
+      surname: surname ?? this.surname,
+      secondSurname: secondSurname ?? this.secondSurname,
+      role: role ?? this.role,
+      currentBlock: currentBlock ?? this.currentBlock,
+    );
+  }
 }
