@@ -14,6 +14,7 @@ class Login extends ConsumerStatefulWidget {
 class LoginState extends ConsumerState<Login> {
   late TextEditingController _emailController;
   late TextEditingController _passwordController;
+  bool _isVisible = true;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   @override
   void initState() {
@@ -62,12 +63,24 @@ class LoginState extends ConsumerState<Login> {
               margin: margin,
               child: TextFormField(
                 controller: _passwordController,
-                obscureText: true,
-                decoration: const InputDecoration(
-                    labelText: 'Contraseña',
-                    labelStyle: TextStyle(color: seedColor),
-                    hintText: "Contraseña",
-                    hintStyle: TextStyle(color: seedColor)),
+                obscureText: _isVisible,
+                decoration: InputDecoration(
+                  labelText: 'Contraseña',
+                  labelStyle: const TextStyle(color: seedColor),
+                  hintText: "Contraseña",
+                  hintStyle: const TextStyle(color: seedColor),
+                  suffixIcon: Container(
+                    margin: EdgeInsets.only(right: screenHeight * 0.01),
+                    child: IconButton(
+                      icon: Icon(
+                          _isVisible ? Icons.visibility_off : Icons.visibility),
+                      color: seedColor,
+                      onPressed: () => setState(() {
+                        _isVisible = !_isVisible;
+                      }),
+                    ),
+                  ),
+                ),
                 keyboardType: TextInputType.visiblePassword,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -99,11 +112,6 @@ class LoginState extends ConsumerState<Login> {
                                 title: const Text('AlertDialog Title'),
                                 content: const Text('AlertDialog description'),
                                 actions: <Widget>[
-                                  TextButton(
-                                    onPressed: () =>
-                                        Navigator.pop(context, 'Cancel'),
-                                    child: const Text('Cancel'),
-                                  ),
                                   TextButton(
                                     onPressed: () =>
                                         Navigator.pop(context, 'OK'),
