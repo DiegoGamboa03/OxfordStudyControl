@@ -39,18 +39,19 @@ final filteredOnlineClassProvider = Provider<List<OnlineClass>>((ref) {
 
   switch (selectedFilter) {
     case OnlineClassFilter.all:
-      return onlineClasses.where((onlineClass) {
+      var list = onlineClasses.where((onlineClass) {
         bool isAvailable = onlineClass.requiredBlock <= user!.currentBlock! &&
-            onlineClass.availablePositions < onlineClass.maxPositions;
+            onlineClass.availablePositions > 0;
 
         return isAvailable && !reservedOnlineClasses.contains(onlineClass.name);
       }).toList();
+      return list;
     case OnlineClassFilter.reserved:
-      return onlineClasses.where((onlineClass) {
-        bool isAvailable = onlineClass.requiredBlock <= user!.currentBlock! &&
-            onlineClass.availablePositions < onlineClass.maxPositions;
+      var list = onlineClasses.where((onlineClass) {
+        bool isAvailable = onlineClass.requiredBlock <= user!.currentBlock!;
         return isAvailable && reservedOnlineClasses.contains(onlineClass.name);
       }).toList();
+      return list;
   }
 });
 
