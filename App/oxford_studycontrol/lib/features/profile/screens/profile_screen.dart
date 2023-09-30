@@ -65,7 +65,18 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               debugPrint('Hola');
               ref.read(appRouterProvider).push('/editProfile', extra: user);
             },
-            child: const Text('Presina para editar tu informacion'))
+            child: const Text('Presiona para editar tu informacion')),
+        Center(
+          child: ElevatedButton(
+              style: ButtonStyle(
+                foregroundColor: MaterialStateProperty.all<Color>(seedColor),
+                backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+              ),
+              onPressed: () {
+                ref.read(appRouterProvider).go('/');
+              },
+              child: const Text('Salir de la sesión')),
+        )
       ],
     );
   }
